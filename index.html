@@ -406,18 +406,13 @@ thead th:hover{background:var(--az3)!important}
 </div>
 <nav class="nav">
   <button class="nb" data-page="inicio">🏠 Inicio</button>
-  <button class="nb active" data-page="s1">📅 Semana 1</button>
-  <button class="nb" data-page="s2">📅 Semana 2</button>
-  <button class="nb" data-page="s3">📅 Semana 3</button>
-  <button class="nb" data-page="s4">📅 Semana 4</button>
+  <span id="week-nav" style="display:contents"></span>
   <button class="nb" data-page="acumulado">🏆 Acumulado</button>
-  <button class="nb" id="btn-guardar" title="Guarda el archivo con todos los datos de las semanas cargadas" style="margin-left:auto;background:rgba(201,168,76,.18);border-color:var(--or2);color:var(--or2)">💾 Guardar</button>
+  <button class="nb" id="btn-add-week" title="Agregar nueva semana" style="margin-left:auto;background:rgba(26,122,60,.25);border-color:#1A7A3C;color:#7effa0">➕ Semana</button>
+  <button class="nb" id="btn-guardar" title="Guarda el archivo con todos los datos de las semanas cargadas" style="background:rgba(201,168,76,.18);border-color:var(--or2);color:var(--or2)">💾 Guardar</button>
 </nav>
 <div id="page-inicio" class="page" data-ok=""></div>
-<div id="page-s1" class="page active" data-ok=""></div>
-<div id="page-s2" class="page"></div>
-<div id="page-s3" class="page"></div>
-<div id="page-s4" class="page"></div>
+<div id="week-pages" style="display:contents"></div>
 <div id="page-acumulado" class="page" data-ok=""></div>
 <div class="mov" id="modal">
   <div class="mo"><button class="mx">✕</button>
@@ -458,6 +453,115 @@ const SCFG = {
   3:{col:'#6A1A7A',light:'rgba(106,26,122,', dias:'Jun 15-21', n:'SEMANA 3'},
   4:{col:'#C9A84C',light:'rgba(201,168,76,',  dias:'Jun 22-30', n:'SEMANA 4'},
 };
+
+const WEEK_COLORS=[
+  {col:'#1A7A3C',light:'rgba(26,122,60,'},
+  {col:'#2980b9',light:'rgba(41,128,185,'},
+  {col:'#6A1A7A',light:'rgba(106,26,122,'},
+  {col:'#C9A84C',light:'rgba(201,168,76,'},
+];
+
+const MONTHS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const DAYS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+function fmtDate(d){
+  const date=new Date(d);
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+}
+function fmtDateRange(start,end){
+  const s=new Date(start), e=new Date(end);
+  return `${DAYS[s.getDay()]} ${s.getDate()} – ${DAYS[e.getDay()]} ${e.getDate()} de ${MONTHS[s.getMonth()]}`;
+}
+
+function initWeeks(weeks){
+  weeks.sort((a,b)=>a.week_number-b.week_number);
+  const nav=$('week-nav');
+  const pages=$('week-pages');
+  if(nav) nav.innerHTML='';
+  if(pages) pages.innerHTML='';
+
+  weeks.forEach((w,i)=>{
+    const sem=w.week_number;
+    const color=WEEK_COLORS[i % WEEK_COLORS.length];
+    const startStr=fmtDate(w.start_date);
+    const endStr=fmtDate(w.end_date);
+    const dias=`${startStr.split(' ')[0]} ${startStr.split(' ')[1]}-${endStr.split(' ')[0]} ${endStr.split(' ')[1]}`;
+
+    // Actualizar metadatos
+    META.fechas[sem]=[startStr,endStr];
+    META.semana_config[sem]={
+      label:w.label,
+      dates:fmtDateRange(w.start_date,w.end_date),
+      dias:dias,
+      icon:'📅',
+      indicadores:['cumplimiento','upt','conversion']
+    };
+    SCFG[sem]={col:color.col,light:color.light,dias:dias,n:w.label.toUpperCase()};
+
+    // Botón de nav
+    if(nav){
+      const btn=document.createElement('button');
+      btn.className='nb'+(sem===META.semana_actual?' active':'');
+      btn.dataset.page='s'+sem;
+      btn.textContent='📅 '+w.label;
+      nav.appendChild(btn);
+    }
+
+    // Div de página
+    if(pages){
+      const div=document.createElement('div');
+      div.id='page-s'+sem;
+      div.className='page'+(sem===META.semana_actual?' active':'');
+      pages.appendChild(div);
+    }
+  });
+
+  PAGES=['inicio'].concat(weeks.map(w=>'s'+w.week_number)).concat(['acumulado']);
+}
+
+async function addWeek(){
+  if(!await checkPassword()) return;
+  try{
+    const resp=await fetch('/api/weeks');
+    if(!resp.ok) throw new Error('No se pudieron obtener las semanas');
+    const weeks=await resp.json();
+    const last=weeks.length?weeks[weeks.length-1]:null;
+    const nextNum=last?last.week_number+1:1;
+
+    const label=prompt('Nombre de la nueva semana:',`Semana ${nextNum}`);
+    if(!label) return;
+
+    let start,end;
+    if(last){
+      start=new Date(last.end_date); start.setDate(start.getDate()+1);
+      end=new Date(start); end.setDate(end.getDate()+6);
+    }else{
+      start=new Date(); end=new Date(); end.setDate(end.getDate()+6);
+    }
+    const startStr=start.toISOString().split('T')[0];
+    const endStr=end.toISOString().split('T')[0];
+
+    const startInput=prompt('Fecha inicio (YYYY-MM-DD):',startStr);
+    if(!startInput) return;
+    const endInput=prompt('Fecha fin (YYYY-MM-DD):',endStr);
+    if(!endInput) return;
+
+    const createResp=await fetch('/api/weeks',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:sessionStorage.getItem('mt_pass')||'', week_number:nextNum, label, start_date:startInput, end_date:endInput})
+    });
+    if(!createResp.ok){
+      const err=await createResp.json().catch(()=>({}));
+      throw new Error(err.error||`Error ${createResp.status}`);
+    }
+    toast('✅ Semana creada. Recargando...',2000);
+    setTimeout(()=>location.reload(),1500);
+  }catch(err){
+    console.error('Add week error:',err);
+    toast('❌ '+err.message,4000);
+  }
+}
 
 // ── STATE ──────────────────────────────────────────────────────
 // weekData[sem] = { storeName: {cumpl, upt, conv, venta, presupuesto} }
@@ -577,7 +681,7 @@ function showModalDescarga(){
 async function exportHtml(){if(await checkPassword())guardar();}
 
 // ── NAV ───────────────────────────────────────────────────────
-const PAGES=['inicio','s1','s2','s3','s4','acumulado'];
+let PAGES=['inicio','s1','s2','s3','s4','acumulado'];
 async function goTo(p){
   console.log('[goTo]', p);
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -1774,12 +1878,26 @@ async function loadFile(file,sem){if(file && await checkPassword())processFile(f
 async function dropFile(e,sem){e.preventDefault();const f=e.dataTransfer.files[0];if(f && await checkPassword())processFile(f,sem);}
 function resetUp(sem){$('uz'+sem).style.display='';
   const l=$('uw'+sem).querySelector('.up-loaded');if(l)l.remove();}
-function clearSem(sem){
-  if(!confirm(`¿Limpiar datos de Semana ${sem}? Esto borrará los resultados de esa semana.`))return;
-  delete weekData[sem];
-  ['s'+sem,'inicio','acumulado'].forEach(p=>{document.getElementById('page-'+p).dataset.ok='';});
-  rSemana(sem);document.getElementById('page-s'+sem).dataset.ok='1';
-  toast(`Semana ${sem} limpiada`);
+async function clearSem(sem){
+  if(!confirm(`¿Limpiar datos de Semana ${sem}? Esto borrará los resultados de esa semana y el Excel del servidor.`))return;
+  try{
+    const password=sessionStorage.getItem('mt_pass')||'';
+    const resp=await fetch(`/api/weeks/${sem}/clear`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password})
+    });
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      throw new Error(err.error||`Error ${resp.status}`);
+    }
+    delete weekData[sem];
+    rSemana(sem);
+    toast(`Semana ${sem} limpiada`);
+  }catch(err){
+    console.error('clearSem error:',err);
+    toast('❌ '+err.message,4000);
+  }
 }
 
 async function processFile(file,sem,shouldUpload=true){
@@ -2246,6 +2364,20 @@ document.addEventListener('DOMContentLoaded',async ()=>{
     console.error('Error cargando catálogo:', err);
     toast('❌ No se pudo cargar el catálogo de tiendas desde el servidor', 6000);
   }
+
+  // Cargar semanas dinámicas desde el backend
+  try{
+    const weeksResp=await fetch('/api/weeks');
+    if(weeksResp.ok){
+      const weeks=await weeksResp.json();
+      if(weeks.length) initWeeks(weeks);
+    }else{
+      console.error('No se pudieron cargar semanas:', weeksResp.status);
+    }
+  }catch(err){
+    console.error('Error cargando semanas:', err);
+  }
+
   $('hbadge').textContent=`Semana ${META.semana_actual} — ${META.fechas[META.semana_actual][0]}`;
   await renderPage('inicio');
   await renderPage('s1'); // semana inicial
@@ -2262,6 +2394,8 @@ function setupListeners(){
     console.log('[setupListeners] bind', btn.dataset.page);
     btn.addEventListener('click',()=>goTo(btn.dataset.page));
   });
+  const addWeekBtn=document.getElementById('btn-add-week');
+  if(addWeekBtn)addWeekBtn.addEventListener('click',addWeek);
   const saveBtn=document.getElementById('btn-guardar');
   if(saveBtn)saveBtn.addEventListener('click',guardarClick);
   $('scrtop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));

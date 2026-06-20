@@ -170,6 +170,43 @@ app.post('/api/weeks/:weekNumber/upload', upload.single('file'), checkPassword, 
   }
 });
 
+app.post('/api/weeks/:weekNumber/clear', checkPassword, async (req, res) => {
+  try {
+    const weekNumber = parseInt(req.params.weekNumber, 10);
+    if(!DATABASE_URL) return res.status(500).json({ ok: false, error: 'DATABASE_URL no configurada' });
+    const result = await db.query(
+      'UPDATE weeks SET excel_data = NULL, loaded_at = NULL WHERE week_number = $1 RETURNING id',
+      [weekNumber]
+    );
+    if(result.rows.length === 0) return res.status(404).json({ ok: false, error: 'Semana no encontrada' });
+    res.json({ ok: true, week: weekNumber });
+  } catch (err) {
+    console.error('Clear week error:', err);
+    res.status(500).json({ ok: false, error: err.message || 'Error limpiando la semana' });
+  }
+});
+
+app.post('/api/weeks', checkPassword, async (req, res) => {
+  try {
+    if(!DATABASE_URL) return res.status(500).json({ ok: false, error: 'DATABASE_URL no configurada' });
+    const { week_number, label, start_date, end_date } = req.body || {};
+    if(!week_number || !label || !start_date || !end_date){
+      return res.status(400).json({ ok: false, error: 'week_number, label, start_date y end_date son requeridos' });
+    }
+    const result = await db.query(
+      `INSERT INTO weeks (week_number, label, start_date, end_date)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (week_number) DO UPDATE SET label=$2, start_date=$3, end_date=$4
+       RETURNING id`,
+      [week_number, label, start_date, end_date]
+    );
+    res.json({ ok: true, week: { id: result.rows[0].id, week_number, label, start_date, end_date } });
+  } catch (err) {
+    console.error('Create week error:', err);
+    res.status(500).json({ ok: false, error: err.message || 'Error creando la semana' });
+  }
+});
+
 // Backward compatibility: download Excel for the current week (defaults to week 1)
 app.get('/api/download-excel', async (req, res) => {
   try {
