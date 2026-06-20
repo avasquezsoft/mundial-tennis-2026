@@ -634,8 +634,7 @@ function findHdrRow(rows){
 
 // ── BACKEND PROTECTION ────────────────────────────────────────
 // La contraseña ya NO vive en el frontend. Se valida contra el backend
-// (variable de entorno PASSWORD en .env) y el Excel se descarga desde
-// el servidor, evitando el bloqueo CORS de Google Drive en el navegador.
+// (variable de entorno PASSWORD en .env).
 
 async function checkPassword(){
   const input = prompt('🔒 Ingresa la contraseña para continuar:');
@@ -658,19 +657,6 @@ async function checkPassword(){
   }
 }
 
-async function fetchExcelFromBackend(sem = META.semana_actual){
-  const resp = await fetch(`/api/weeks/${sem}/excel`);
-  if(!resp.ok){
-    const err = await resp.json().catch(()=>({}));
-    throw new Error(err.error || `Error ${resp.status} descargando Excel`);
-  }
-  const blob = await resp.blob();
-  if(blob.size < 1000) throw new Error('El archivo descargado no parece un Excel válido');
-  return new File([blob], `cubo-semana-${sem}.xlsx`, {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  });
-}
-
 async function uploadExcelToBackend(file, sem){
   const fd = new FormData();
   fd.append('file', file);
@@ -681,25 +667,6 @@ async function uploadExcelToBackend(file, sem){
     const err = await resp.json().catch(()=>({}));
     throw new Error(err.error || `Error ${resp.status} subiendo Excel`);
   }
-}
-
-// Carga automática al iniciar la página (sin contraseña)
-async function autoLoadFromDrive(sem = META.semana_actual){
-  try{
-    toast(`⬇️ Descargando Excel de la Semana ${sem}...`, 3500);
-    const file = await fetchExcelFromBackend(sem);
-    await processFile(file, sem, false);
-  }catch(err){
-    console.error('Week load error:', err);
-    const errEl=$('err'+sem); if(errEl) errEl.innerHTML=`<div class="err">❌ ${err.message}</div>`;
-    toast('Error al descargar el archivo del servidor.', 5000);
-  }
-}
-
-// Carga manual desde Drive (sí pide contraseña)
-async function manualLoadFromDrive(sem){
-  if(!await checkPassword())return;
-  await autoLoadFromDrive(sem);
 }
 
 // ── CATÁLOGO DE TIENDAS DESDE EXCEL ───────────────────────────
@@ -1548,11 +1515,9 @@ function rSemana(sem){
     <div class="ic">✅</div>
     <div class="inf">
       <div class="fn">Semana ${sem} — datos cargados</div>
-      <div class="fm">${Object.keys(weekData[sem]).length} tiendas · Fuente: cubo todos los canales 3.xlsx (Google Drive)</div>
+      <div class="fm">${Object.keys(weekData[sem]).length} tiendas · Fuente: cubo todos los canales 3.xlsx</div>
     </div>
     <button class="btn-ch" onclick="resetUp(${sem})">↻ Actualizar archivo</button>
-    <button class="btn-ch" style="margin-left:8px;background:rgba(41,128,185,.25)"
-      onclick="manualLoadFromDrive(${sem})">🔄 Drive</button>
   </div>`:''}
   <div id="uz${sem}" class="upload-z" ${hasD?'style="display:none"':''}
     ondragover="this.classList.add('drag');event.preventDefault()"
@@ -1560,14 +1525,11 @@ function rSemana(sem){
     ondrop="this.classList.remove('drag');dropFile(event,${sem})">
     <span class="up-icon">📊</span>
     <div class="up-t">Cargar Excel — Semana ${sem}</div>
-    <div class="up-h">Al abrir la página el sistema descarga automáticamente<br>
-      <b>cubo todos los canales 3.xlsx</b> desde Google Drive.<br>
-      También puedes subirlo manualmente o forzar la descarga.</div>
+    <div class="up-h">Sube el archivo <b>cubo todos los canales 3.xlsx</b> de esta semana.</div>
     <div class="file-wrap">
       <input type="file" accept=".xlsx,.xls" onchange="loadFile(this.files[0],${sem})">
       <div class="btn-up">📂 Seleccionar archivo</div>
     </div>
-    <button class="btn-up btn-drive" onclick="manualLoadFromDrive(${sem})">🔄 Descargar desde Google Drive</button>
   </div>
   <div id="err${sem}"></div>
   </div>`;
@@ -2265,8 +2227,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   injectBalls();
   setupListeners();
   $('loader').classList.add('hide');
-  // Cargar automáticamente el cubo desde Google Drive para la semana activa
-  autoLoadFromDrive(META.semana_actual);
+  // La carga de archivos es manual; no se descarga automáticamente al abrir.
 });
 
 function setupListeners(){
