@@ -579,29 +579,38 @@ async function exportHtml(){if(await checkPassword())guardar();}
 // ── NAV ───────────────────────────────────────────────────────
 const PAGES=['inicio','s1','s2','s3','s4','acumulado'];
 async function goTo(p){
+  console.log('[goTo]', p);
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  const idx=PAGES.indexOf(p);if(idx>=0)document.querySelectorAll('.nb')[idx].classList.add('active');
+  document.querySelectorAll('.nb[data-page]').forEach(x=>x.classList.remove('active'));
+  const pageEl=document.getElementById('page-'+p);
+  const btnEl=document.querySelector(`.nb[data-page="${p}"]`);
+  if(pageEl) pageEl.classList.add('active');
+  if(btnEl) btnEl.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  const el=document.getElementById('page-'+p);
-  if(!el.dataset.ok){await renderPage(p);el.dataset.ok='1';}
+  try{
+    await renderPage(p);
+  }catch(err){
+    console.error('[goTo] Error renderizando', p, err);
+  }
 }
-async function rePage(p){const el=document.getElementById('page-'+p);el.dataset.ok='';
-  if(el.classList.contains('active')){await renderPage(p);el.dataset.ok='1';}}
+async function rePage(p){
+  console.log('[rePage]', p);
+  try{ await renderPage(p); }catch(err){ console.error('[rePage] Error', p, err); }
+}
 async function renderPage(p){
-  if(p==='inicio')rInicio();
+  console.log('[renderPage]', p);
+  if(p==='inicio') rInicio();
   else if(p[0]==='s'&&p.length===2){
     const sem=+p[1];
-    // ponytail: renderizar siempre primero para que el usuario vea la página,
-    // luego intentar traer datos del backend si aún no están cargados.
     rSemana(sem);
     if(!weekData[sem]){
-      console.log(`Semana ${sem} no tiene datos locales, intentando cargar del backend...`);
+      console.log(`[renderPage] Semana ${sem} sin datos locales, intentando backend...`);
       await loadWeekFromBackend(sem);
+    }else{
+      console.log(`[renderPage] Semana ${sem} ya tiene datos en memoria`);
     }
   }
-  else if(p==='acumulado')rAcumulado();
+  else if(p==='acumulado') rAcumulado();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────
@@ -2229,6 +2238,7 @@ const _ballObs=new MutationObserver(()=>injectBalls());
 _ballObs.observe(document.body,{childList:true,subtree:true});
 
 document.addEventListener('DOMContentLoaded',async ()=>{
+  console.log('[init] Iniciando app');
   // Cargar catálogo de tiendas y grupos desde el backend
   try{
     await loadCatalogFromBackend();
@@ -2237,18 +2247,19 @@ document.addEventListener('DOMContentLoaded',async ()=>{
     toast('❌ No se pudo cargar el catálogo de tiendas desde el servidor', 6000);
   }
   $('hbadge').textContent=`Semana ${META.semana_actual} — ${META.fechas[META.semana_actual][0]}`;
-  rInicio();
-  $('page-inicio').dataset.ok='1';
-  // Cargar semana 1 desde el backend si hay un Excel persistido
-  await loadWeekFromBackend(1);
-  if(!weekData[1]){ rSemana(1); $('page-s1').dataset.ok='1'; }
+  await renderPage('inicio');
+  await renderPage('s1'); // semana inicial
   injectBalls();
   setupListeners();
   $('loader').classList.add('hide');
+  console.log('[init] App lista');
 });
 
 function setupListeners(){
-  document.querySelectorAll('.nb[data-page]').forEach(btn=>{
+  const navBtns=document.querySelectorAll('.nb[data-page]');
+  console.log('[setupListeners] botones encontrados:', navBtns.length);
+  navBtns.forEach(btn=>{
+    console.log('[setupListeners] bind', btn.dataset.page);
     btn.addEventListener('click',()=>goTo(btn.dataset.page));
   });
   const saveBtn=document.getElementById('btn-guardar');
