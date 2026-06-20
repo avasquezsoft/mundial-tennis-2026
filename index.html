@@ -395,7 +395,7 @@ thead th:hover{background:var(--az3)!important}
       <img class="ball-lazy" alt="TNS" src="ball.png">
     </div>
     <div class="hdr-divider"></div>
-    <div id="hbadge" class="hbadge">Semana 1 — 01 Jun 2026</div>
+    <div id="hbadge" class="hbadge">Semana 1 — 11 Jun 2026</div>
   </div>
 </header>
 <div class="motto">
@@ -441,17 +441,17 @@ function ballRow(sizes=['ball-lg','ball-md','ball-xl','ball-md','ball-lg'],delay
 }
 
 // ── DATA ─────────────────────────────────────────────────────
-const D = {"meta":{"semana_actual":1,"fechas":{"1":["01 Jun 2026","07 Jun 2026"],"2":["08 Jun 2026","14 Jun 2026"],"3":["15 Jun 2026","21 Jun 2026"],"4":["22 Jun 2026","30 Jun 2026"]},"semana_config":{"1":{"label":"Semana 1","dates":"Lunes 1 – Domingo 7 de Junio","dias":"Jun 1-7","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"2":{"label":"Semana 2","dates":"Lunes 8 – Domingo 14 de Junio","dias":"Jun 8-14","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"3":{"label":"Semana 3","dates":"Lunes 15 – Domingo 21 de Junio","dias":"Jun 15-21","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"4":{"label":"Semana 4","dates":"Lunes 22 – Martes 30 de Junio","dias":"Jun 22-30","icon":"📅","indicadores":["cumplimiento","upt","conversion"]}},"premios":{"ganador_grupo":500000,"campeon":2000000,"subcampeon":1000000,"tercer_puesto":500000,"bota_upt":1000000,"botin_conv":1000000,"puskas":500000,"total_premios":15500000},"total_tiendas":94,"total_grupos":17,"grupos_por_tipo":{"ALMACÉN REMATADOR":["Grupo Rematadores"],"ALMACÉN OUTLET":["Outlet A","Outlet B","Outlet C","Outlet D"],"ALMACÉN DE LÍNEA":["Línea A","Línea B","Línea C","Línea D","Línea E","Línea F","Línea G","Línea H","Línea I","Línea J","Línea K","Línea L"]},"condicion_min_cumpl":1.0,"puntos_por_categoria":3,"max_puntos_semana":9,"max_puntos_total":36}};
+const D = {"meta":{"semana_actual":1,"fechas":{"1":["11 Jun 2026","17 Jun 2026"],"2":["18 Jun 2026","24 Jun 2026"],"3":["25 Jun 2026","01 Jul 2026"],"4":["02 Jul 2026","08 Jul 2026"]},"semana_config":{"1":{"label":"Semana 1","dates":"Jueves 11 – Miércoles 17 de Junio","dias":"Jun 11-17","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"2":{"label":"Semana 2","dates":"Jueves 18 – Miércoles 24 de Junio","dias":"Jun 18-24","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"3":{"label":"Semana 3","dates":"Jueves 25 – Miércoles 1 de Julio","dias":"Jun 25-Jul 1","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"4":{"label":"Semana 4","dates":"Jueves 2 – Miércoles 8 de Julio","dias":"Jul 2-8","icon":"📅","indicadores":["cumplimiento","upt","conversion"]}},"premios":{"ganador_grupo":500000,"campeon":2000000,"subcampeon":1000000,"tercer_puesto":500000,"bota_upt":1000000,"botin_conv":1000000,"puskas":500000,"total_premios":15500000},"total_tiendas":94,"total_grupos":17,"grupos_por_tipo":{"ALMACÉN REMATADOR":["Grupo Rematadores"],"ALMACÉN OUTLET":["Outlet A","Outlet B","Outlet C","Outlet D"],"ALMACÉN DE LÍNEA":["Línea A","Línea B","Línea C","Línea D","Línea E","Línea F","Línea G","Línea H","Línea I","Línea J","Línea K","Línea L"]},"condicion_min_cumpl":1.0,"puntos_por_categoria":3,"max_puntos_semana":9,"max_puntos_total":36}};
 D.grupos = [];
 let META = D.meta;
 const COND = META.condicion_min_cumpl;   // 1.00
 
 // ── SEMANA CONFIG ─────────────────────────────────────────────
 const SCFG = {
-  1:{col:'#1A7A3C',light:'rgba(26,122,60,',  dias:'Jun 1-7',   n:'SEMANA 1'},
-  2:{col:'#2980b9',light:'rgba(41,128,185,',  dias:'Jun 8-14',  n:'SEMANA 2'},
-  3:{col:'#6A1A7A',light:'rgba(106,26,122,', dias:'Jun 15-21', n:'SEMANA 3'},
-  4:{col:'#C9A84C',light:'rgba(201,168,76,',  dias:'Jun 22-30', n:'SEMANA 4'},
+  1:{col:'#1A7A3C',light:'rgba(26,122,60,',  dias:'Jun 11-17',   n:'SEMANA 1'},
+  2:{col:'#2980b9',light:'rgba(41,128,185,',  dias:'Jun 18-24',  n:'SEMANA 2'},
+  3:{col:'#6A1A7A',light:'rgba(106,26,122,', dias:'Jun 25-Jul 1', n:'SEMANA 3'},
+  4:{col:'#C9A84C',light:'rgba(201,168,76,',  dias:'Jul 2-8', n:'SEMANA 4'},
 };
 
 const WEEK_COLORS=[
