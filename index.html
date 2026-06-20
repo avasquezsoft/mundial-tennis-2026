@@ -682,6 +682,14 @@ async function exportHtml(){if(await checkPassword())guardar();}
 
 // ── NAV ───────────────────────────────────────────────────────
 let PAGES=['inicio','s1','s2','s3','s4','acumulado'];
+
+function updateBadge(sem){
+  const cfg=META.semana_config[sem];
+  const fechas=META.fechas[sem];
+  const label=cfg?cfg.label:`Semana ${sem}`;
+  $('hbadge').textContent=fechas?`${label} — ${fechas[0]}`:label;
+}
+
 async function goTo(p){
   console.log('[goTo]', p);
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -690,6 +698,8 @@ async function goTo(p){
   const btnEl=document.querySelector(`.nb[data-page="${p}"]`);
   if(pageEl) pageEl.classList.add('active');
   if(btnEl) btnEl.classList.add('active');
+  if(p[0]==='s'&&p.length===2) updateBadge(+p[1]);
+  else if(p==='inicio'||p==='acumulado') updateBadge(META.semana_actual);
   window.scrollTo({top:0,behavior:'smooth'});
   try{
     await renderPage(p);
@@ -1879,6 +1889,7 @@ async function dropFile(e,sem){e.preventDefault();const f=e.dataTransfer.files[0
 function resetUp(sem){$('uz'+sem).style.display='';
   const l=$('uw'+sem).querySelector('.up-loaded');if(l)l.remove();}
 async function clearSem(sem){
+  if(!await checkPassword())return;
   if(!confirm(`¿Limpiar datos de Semana ${sem}? Esto borrará los resultados de esa semana y el Excel del servidor.`))return;
   try{
     const password=sessionStorage.getItem('mt_pass')||'';
@@ -2378,7 +2389,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
     console.error('Error cargando semanas:', err);
   }
 
-  $('hbadge').textContent=`Semana ${META.semana_actual} — ${META.fechas[META.semana_actual][0]}`;
+  updateBadge(META.semana_actual);
   await renderPage('inicio');
   await renderPage('s1'); // semana inicial
   injectBalls();
