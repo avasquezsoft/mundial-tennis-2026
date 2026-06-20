@@ -155,6 +155,7 @@ app.post('/api/weeks/:weekNumber/upload', upload.single('file'), checkPassword, 
   try {
     const weekNumber = parseInt(req.params.weekNumber, 10);
     if(!req.file) return res.status(400).json({ ok: false, error: 'Archivo requerido' });
+    if(!DATABASE_URL) return res.status(500).json({ ok: false, error: 'DATABASE_URL no configurada en el servidor' });
 
     const result = await db.query(
       'UPDATE weeks SET excel_data = $1, loaded_at = NOW() WHERE week_number = $2 RETURNING id',
@@ -165,7 +166,7 @@ app.post('/api/weeks/:weekNumber/upload', upload.single('file'), checkPassword, 
     res.json({ ok: true, week: weekNumber, size: req.file.size });
   } catch (err) {
     console.error('Upload error:', err);
-    res.status(500).json({ ok: false, error: err.message });
+    res.status(500).json({ ok: false, error: err.message || 'Error guardando el archivo' });
   }
 });
 
@@ -191,7 +192,44 @@ app.get('/api/download-excel', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Mundial Tennis server running on http://localhost:${PORT}`);
-  if(!DATABASE_URL) console.warn('WARNING: DATABASE_URL is not set. Database endpoints will fail.');
-});
+async function initDb() {
+  if(!DATABASE_URL) return;
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS weeks (
+        id SERIAL PRIMARY KEY,
+        week_number INT UNIQUE NOT NULL,
+        label TEXT NOT NULL,
+        start_date DATE NOT NULL,
+        end_date DATE NOT NULL,
+        excel_data BYTEA,
+        loaded_at TIMESTAMPTZ
+      )
+    `);
+    const weeks = [
+      [1, 'Semana 1', '2026-06-01', '2026-06-07'],
+      [2, 'Semana 2', '2026-06-08', '2026-06-14'],
+      [3, 'Semana 3', '2026-06-15', '2026-06-21'],
+      [4, 'Semana 4', '2026-06-22', '2026-06-30']
+    ];
+    for(const [wn, label, start, end] of weeks){
+      await db.query(
+        `INSERT INTO weeks (week_number, label, start_date, end_date)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (week_number) DO NOTHING`,
+        [wn, label, start, end]
+      );
+    }
+    console.log('DB initialized');
+  } catch(err) {
+    console.error('DB init error:', err);
+  }
+}
+
+(async () => {
+  await initDb();
+  app.listen(PORT, () => {
+    console.log(`Mundial Tennis server running on http://localhost:${PORT}`);
+    if(!DATABASE_URL) console.warn('WARNING: DATABASE_URL is not set. Database endpoints will fail.');
+  });
+})();
