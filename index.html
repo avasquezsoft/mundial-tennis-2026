@@ -460,22 +460,10 @@ const SCFG = {
 };
 
 // ── STATE ──────────────────────────────────────────────────────
-const SK = 'mundial_tennis_2026_v3';
 // weekData[sem] = { storeName: {cumpl, upt, conv, venta, presupuesto} }
-let weekData = {1:{"EVENTOS TENNIS CARNAVAL BQUILLA":{"cumpl":1.376,"upt":4.27,"conv":null,"venta":null,"presupuesto":null,"ticket":null},"BIMA":{"cumpl":0.99,"upt":3.45,"conv":0.16699999999999998,"venta":null,"presupuesto":null,"ticket":null},"ROSELLÓN":{"cumpl":0.853,"upt":4.04,"conv":0.285,"venta":null,"presupuesto":null,"ticket":null},"TENNIS GUAYABAL":{"cumpl":1.2429999999999999,"upt":2.39,"conv":0.21,"venta":null,"presupuesto":null,"ticket":null},"ZONA INDUSTRIAL 1":{"cumpl":1.03,"upt":2.74,"conv":0.16399999999999998,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICO NEIVA":{"cumpl":1.8130000000000002,"upt":2.2,"conv":0.171,"venta":null,"presupuesto":null,"ticket":null},"MONTERIA CENTRO":{"cumpl":1.365,"upt":2.5,"conv":0.204,"venta":null,"presupuesto":null,"ticket":null},"ZONA INDUSTRIAL 3":{"cumpl":0.797,"upt":2.33,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"UNICO PASTO":{"cumpl":0.8340000000000001,"upt":2.4,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"UNICO CALI":{"cumpl":0.856,"upt":2.34,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"TENNIS TOBERIN":{"cumpl":0.976,"upt":2.34,"conv":0.174,"venta":null,"presupuesto":null,"ticket":null},"TOP MARK ANTARES":{"cumpl":0.9359999999999999,"upt":2.09,"conv":0.162,"venta":null,"presupuesto":null,"ticket":null},"ARAUCO PREMIUM OUTLET SOPO":{"cumpl":0.555,"upt":2.18,"conv":0.12300000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICO BARRANQUILLA":{"cumpl":0.711,"upt":2.19,"conv":0.165,"venta":null,"presupuesto":null,"ticket":null},"TENNIS EL EDEN":{"cumpl":0.8640000000000001,"upt":1.92,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"FLORESTA OUTLET":{"cumpl":1.517,"upt":2.26,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"LA HERRADURA":{"cumpl":1.245,"upt":2.18,"conv":0.193,"venta":null,"presupuesto":null,"ticket":null},"TENNIS CHAPINERO OUTLET":{"cumpl":1.146,"upt":1.95,"conv":0.179,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICO BUCARAMANGA":{"cumpl":0.8740000000000001,"upt":2.04,"conv":0.1,"venta":null,"presupuesto":null,"ticket":null},"UNICO DOS QUEBRADAS":{"cumpl":0.621,"upt":2.23,"conv":0.175,"venta":null,"presupuesto":null,"ticket":null},"MANIZALES CENTRO":{"cumpl":1.149,"upt":2.09,"conv":0.215,"venta":null,"presupuesto":null,"ticket":null},"DE MODA OUTLET":{"cumpl":1.0979999999999999,"upt":1.91,"conv":0.2,"venta":null,"presupuesto":null,"ticket":null},"GRAN PLAZA":{"cumpl":1.084,"upt":1.8,"conv":0.151,"venta":null,"presupuesto":null,"ticket":null},"PUERTA DEL NORTE 1":{"cumpl":1.036,"upt":1.8,"conv":0.158,"venta":null,"presupuesto":null,"ticket":null},"LA CENTRAL":{"cumpl":0.8190000000000001,"upt":2.12,"conv":0.147,"venta":null,"presupuesto":null,"ticket":null},"ALAMEDAS DEL SINU":{"cumpl":1.375,"upt":2.34,"conv":0.155,"venta":null,"presupuesto":null,"ticket":null},"CACIQUE":{"cumpl":1.02,"upt":2.48,"conv":0.14,"venta":null,"presupuesto":null,"ticket":null},"VENTURA PLAZA CUCUTA":{"cumpl":0.821,"upt":2.07,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"SAN SILVESTRE":{"cumpl":0.8859999999999999,"upt":2.46,"conv":0.149,"venta":null,"presupuesto":null,"ticket":null},"ANDINO":{"cumpl":0.779,"upt":2.41,"conv":0.13699999999999998,"venta":null,"presupuesto":null,"ticket":null},"GRAN ESTACION":{"cumpl":0.7290000000000001,"upt":2.41,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"PASTO CENTRO":{"cumpl":1.4609999999999999,"upt":2.42,"conv":0.105,"venta":null,"presupuesto":null,"ticket":null},"TENNIS JARDIN PLAZA CUCUTA":{"cumpl":1.338,"upt":3.23,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"PLAZA CENTRAL":{"cumpl":1.345,"upt":2.46,"conv":0.098,"venta":null,"presupuesto":null,"ticket":null},"GUACARÍ":{"cumpl":1.179,"upt":2.2,"conv":0.146,"venta":null,"presupuesto":null,"ticket":null},"TITAN":{"cumpl":0.825,"upt":1.93,"conv":0.107,"venta":null,"presupuesto":null,"ticket":null},"SANTA FE MEDELLIN":{"cumpl":0.868,"upt":2.04,"conv":0.171,"venta":null,"presupuesto":null,"ticket":null},"LA ESTACION IBAGUE":{"cumpl":1.165,"upt":2.29,"conv":0.13,"venta":null,"presupuesto":null,"ticket":null},"SAN FRANCISCO SINCELEJO":{"cumpl":1.31,"upt":2.07,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MULTIPLAZA BOGOTA":{"cumpl":1.14,"upt":2.16,"conv":0.091,"venta":null,"presupuesto":null,"ticket":null},"LA SABANA VILLAVICENCIO":{"cumpl":0.986,"upt":2.17,"conv":0.08900000000000001,"venta":null,"presupuesto":null,"ticket":null},"CHIPICHAPE":{"cumpl":0.8059999999999999,"upt":2.1,"conv":0.15,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICENTRO CALI":{"cumpl":0.78,"upt":2.06,"conv":0.11599999999999999,"venta":null,"presupuesto":null,"ticket":null},"BUENA VISTA MONTERIA":{"cumpl":1.79,"upt":1.98,"conv":0.16899999999999998,"venta":null,"presupuesto":null,"ticket":null},"PRIMAVERA URBANA":{"cumpl":1.09,"upt":2.26,"conv":0.127,"venta":null,"presupuesto":null,"ticket":null},"SAN PEDRO NEIVA":{"cumpl":1.058,"upt":2.02,"conv":0.133,"venta":null,"presupuesto":null,"ticket":null},"TESORO 1":{"cumpl":1.085,"upt":2.16,"conv":0.136,"venta":null,"presupuesto":null,"ticket":null},"VIVA BARRANQUILLA":{"cumpl":0.9,"upt":2.06,"conv":0.08800000000000001,"venta":null,"presupuesto":null,"ticket":null},"MONEDA":{"cumpl":0.675,"upt":1.93,"conv":0.126,"venta":null,"presupuesto":null,"ticket":null},"CARACOLI":{"cumpl":1.3730000000000002,"upt":2.05,"conv":0.11800000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO VILLAVICENCIO":{"cumpl":1.099,"upt":1.72,"conv":0.113,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALLPLAZA NQS":{"cumpl":0.775,"upt":2.17,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALL PLAZA BARRANQUILLA":{"cumpl":0.9520000000000001,"upt":2.21,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"ARMENIA":{"cumpl":0.72,"upt":2.01,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"IPIALES":{"cumpl":0.652,"upt":2.19,"conv":0.059000000000000004,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO BOGOTA 2":{"cumpl":1.195,"upt":1.92,"conv":0.09699999999999999,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICENTRO PASTO":{"cumpl":1.124,"upt":2.09,"conv":0.083,"venta":null,"presupuesto":null,"ticket":null},"AMERICAS":{"cumpl":0.937,"upt":2.07,"conv":0.109,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO ARMENIA":{"cumpl":0.77,"upt":1.96,"conv":0.126,"venta":null,"presupuesto":null,"ticket":null},"CARIBE PLAZA/CGENA":{"cumpl":0.9420000000000001,"upt":2.2,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"FUNDADORES MANIZALES":{"cumpl":0.7959999999999999,"upt":1.89,"conv":0.114,"venta":null,"presupuesto":null,"ticket":null},"JARDÍN PLAZA 2":{"cumpl":1.238,"upt":2.13,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"SALITRE":{"cumpl":1.189,"upt":2.02,"conv":0.11900000000000001,"venta":null,"presupuesto":null,"ticket":null},"PORTAL DEL QUINDIO":{"cumpl":1.043,"upt":2.09,"conv":0.128,"venta":null,"presupuesto":null,"ticket":null},"TENNIS ARKADIA":{"cumpl":0.945,"upt":2.2,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"PREMIUM PLAZA":{"cumpl":0.975,"upt":1.93,"conv":0.13699999999999998,"venta":null,"presupuesto":null,"ticket":null},"CENTRO MAYOR":{"cumpl":0.972,"upt":2.17,"conv":0.10800000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS PLAZA FABRICATO":{"cumpl":1.179,"upt":2.84,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"LA COLINA ARAUCO":{"cumpl":1.033,"upt":1.87,"conv":0.10300000000000001,"venta":null,"presupuesto":null,"ticket":null},"PEREIRA CENTRO":{"cumpl":0.78,"upt":1.89,"conv":0.12300000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS NUESTRO BOGOTA":{"cumpl":0.872,"upt":1.73,"conv":0.08800000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO MEDELLIN":{"cumpl":0.7040000000000001,"upt":1.99,"conv":0.159,"venta":null,"presupuesto":null,"ticket":null},"PUERTA DEL NORTE 2":{"cumpl":0.9159999999999999,"upt":2.09,"conv":0.16,"venta":null,"presupuesto":null,"ticket":null},"PARQUE ARBOLEDA":{"cumpl":1.39,"upt":1.99,"conv":0.10800000000000001,"venta":null,"presupuesto":null,"ticket":null},"JOSE MARIA CORDOVA":{"cumpl":1.1179999999999999,"upt":1.86,"conv":0.185,"venta":null,"presupuesto":null,"ticket":null},"SANTA FE 1":{"cumpl":1.0190000000000001,"upt":1.98,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"LOS MOLINOS":{"cumpl":0.922,"upt":1.84,"conv":0.009000000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS VIVA ENVIGADO":{"cumpl":0.877,"upt":2.03,"conv":0.11900000000000001,"venta":null,"presupuesto":null,"ticket":null},"MAYORCA 2":{"cumpl":0.831,"upt":1.77,"conv":0.141,"venta":null,"presupuesto":null,"ticket":null},"MALL PLAZA CARTAGENA":{"cumpl":1.161,"upt":2.49,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"PALMIRA LLANOGRANDE":{"cumpl":1.127,"upt":2.07,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"TENNIS APARTADO PLAZA DEL RIO":{"cumpl":1.126,"upt":2.0,"conv":0.091,"venta":null,"presupuesto":null,"ticket":null},"SAN NICOLAS":{"cumpl":0.731,"upt":1.83,"conv":0.135,"venta":null,"presupuesto":null,"ticket":null},"TOP MARK MAYORCA":{"cumpl":0.847,"upt":2.13,"conv":0.11599999999999999,"venta":null,"presupuesto":null,"ticket":null},"VIVA LA CEJA":{"cumpl":1.2590000000000001,"upt":2.1,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALL PLAZA MANIZALES":{"cumpl":1.212,"upt":1.88,"conv":2.15,"venta":null,"presupuesto":null,"ticket":null},"IBAGUE":{"cumpl":1.099,"upt":1.95,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"VIVA LAURELES MEDELLIN":{"cumpl":0.883,"upt":1.85,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"MARIA VICTORIA":{"cumpl":0.9890000000000001,"upt":1.86,"conv":0.134,"venta":null,"presupuesto":null,"ticket":null},"CAMINO REAL":{"cumpl":1.0170000000000001,"upt":1.85,"conv":0.113,"venta":null,"presupuesto":null,"ticket":null},"LA FLORIDA MEDELLIN 2":{"cumpl":0.772,"upt":1.91,"conv":0.12,"venta":null,"presupuesto":null,"ticket":null},"METRO SAN ANTONIO":{"cumpl":0.735,"upt":1.63,"conv":0.102,"venta":null,"presupuesto":null,"ticket":null},"SAN NICOLAS 2":{"cumpl":0.948,"upt":1.87,"conv":0.10300000000000001,"venta":null,"presupuesto":null,"ticket":null},"SAN DIEGO 2":{"cumpl":0.828,"upt":1.73,"conv":0.166,"venta":null,"presupuesto":null,"ticket":null}}}; // <<<SEMANAS>>>
+let weekData = {};
 let charts = {};
 let rkSort = {col:'pts_total', dir:-1};
-
-// Backup en localStorage (mismo navegador/ruta)
-function saveState(){try{localStorage.setItem(SK,JSON.stringify(weekData));}catch(e){}}
-
-function loadState(){
-  if(Object.keys(weekData).length>0)return;
-  try{
-    const r=localStorage.getItem(SK);
-    if(r)weekData=JSON.parse(r);
-  }catch(e){weekData={};}
-}
 
 // ── MOTOR DE GUARDADO ─────────────────────────────────────────
 // Construye el HTML con weekData embebido (fuente única de verdad)
@@ -590,20 +578,24 @@ async function exportHtml(){if(await checkPassword())guardar();}
 
 // ── NAV ───────────────────────────────────────────────────────
 const PAGES=['inicio','s1','s2','s3','s4','acumulado'];
-function goTo(p){
+async function goTo(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   const idx=PAGES.indexOf(p);if(idx>=0)document.querySelectorAll('.nb')[idx].classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   const el=document.getElementById('page-'+p);
-  if(!el.dataset.ok){renderPage(p);el.dataset.ok='1';}
+  if(!el.dataset.ok){await renderPage(p);el.dataset.ok='1';}
 }
-function rePage(p){const el=document.getElementById('page-'+p);el.dataset.ok='';
-  if(el.classList.contains('active')){renderPage(p);el.dataset.ok='1';}}
-function renderPage(p){
+async function rePage(p){const el=document.getElementById('page-'+p);el.dataset.ok='';
+  if(el.classList.contains('active')){await renderPage(p);el.dataset.ok='1';}}
+async function renderPage(p){
   if(p==='inicio')rInicio();
-  else if(p[0]==='s'&&p.length===2)rSemana(+p[1]);
+  else if(p[0]==='s'&&p.length===2){
+    const sem=+p[1];
+    if(!weekData[sem]) await loadWeekFromBackend(sem);
+    else rSemana(sem);
+  }
   else if(p==='acumulado')rAcumulado();
 }
 
@@ -666,6 +658,25 @@ async function uploadExcelToBackend(file, sem){
   if(!resp.ok){
     const err = await resp.json().catch(()=>({}));
     throw new Error(err.error || `Error ${resp.status} subiendo Excel`);
+  }
+}
+
+// Carga silenciosa de una semana desde el backend (sin toast de error si no existe)
+async function loadWeekFromBackend(sem){
+  try{
+    const resp = await fetch(`/api/weeks/${sem}/excel`);
+    if(!resp.ok){
+      if(resp.status===404) return; // aún no hay Excel subido, es normal
+      throw new Error(`Error ${resp.status}`);
+    }
+    const blob = await resp.blob();
+    if(blob.size < 1000) return;
+    const file = new File([blob], `cubo-semana-${sem}.xlsx`, {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    await processFile(file, sem, false); // false = ya está persistido, no re-subir
+  }catch(err){
+    console.error(`Auto-load semana ${sem}:`, err);
   }
 }
 
@@ -1749,7 +1760,7 @@ function resetUp(sem){$('uz'+sem).style.display='';
   const l=$('uw'+sem).querySelector('.up-loaded');if(l)l.remove();}
 function clearSem(sem){
   if(!confirm(`¿Limpiar datos de Semana ${sem}? Esto borrará los resultados de esa semana.`))return;
-  delete weekData[sem];saveState();
+  delete weekData[sem];
   ['s'+sem,'inicio','acumulado'].forEach(p=>{document.getElementById('page-'+p).dataset.ok='';});
   rSemana(sem);document.getElementById('page-s'+sem).dataset.ok='1';
   toast(`Semana ${sem} limpiada`);
@@ -1762,7 +1773,7 @@ async function processFile(file,sem,shouldUpload=true){
     const data=await parseExcelFull(file);
     const cnt=Object.keys(data).length;
     if(cnt===0)throw new Error('No se encontraron tiendas con datos');
-    weekData[sem]=data; saveState(); // localStorage como respaldo
+    weekData[sem]=data;
     // Subir al backend para persistencia (solo en carga manual, la auto ya está persistida)
     if(shouldUpload){
       try{
@@ -2218,16 +2229,15 @@ document.addEventListener('DOMContentLoaded',async ()=>{
     console.error('Error cargando catálogo:', err);
     toast('❌ No se pudo cargar el catálogo de tiendas desde el servidor', 6000);
   }
-  loadState();
   $('hbadge').textContent=`Semana ${META.semana_actual} — ${META.fechas[META.semana_actual][0]}`;
   rInicio();
   $('page-inicio').dataset.ok='1';
-  rSemana(1);
-  $('page-s1').dataset.ok='1';
+  // Cargar semana 1 desde el backend si hay un Excel persistido
+  await loadWeekFromBackend(1);
+  if(!weekData[1]){ rSemana(1); $('page-s1').dataset.ok='1'; }
   injectBalls();
   setupListeners();
   $('loader').classList.add('hide');
-  // La carga de archivos es manual; no se descarga automáticamente al abrir.
 });
 
 function setupListeners(){
