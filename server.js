@@ -86,8 +86,26 @@ app.post('/api/login', (req, res) => {
 
 app.get('/api/stores', (req, res) => {
   try {
-    const buffer = fs.readFileSync(EXCEL_PATH);
-    const stores = parseStoresFromBuffer(buffer);
+    if (fs.existsSync(EXCEL_PATH)) {
+      const buffer = fs.readFileSync(EXCEL_PATH);
+      const stores = parseStoresFromBuffer(buffer);
+      return res.json(stores);
+    }
+
+    // ponytail: fallback a grupos.json para poder arrancar sin Excel base.
+    // El Excel sigue siendo la fuente canónica de tipo/zona; sin él la zona queda vacía.
+    const groups = JSON.parse(fs.readFileSync(path.join(__dirname, 'grupos.json'), 'utf8'));
+    const seen = new Set();
+    const stores = [];
+    groups.forEach(g => {
+      (g.tiendas || []).forEach(nombre => {
+        const un = String(nombre).toUpperCase();
+        if (seen.has(un)) return;
+        seen.add(un);
+        stores.push({ nombre: String(nombre).trim(), tipo: g.tipo || '', zona: '' });
+      });
+    });
+    console.log(`Stores fallback: ${stores.length} tiendas desde grupos.json (no se encontró ${EXCEL_PATH})`);
     res.json(stores);
   } catch (err) {
     console.error('Stores error:', err);
