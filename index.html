@@ -1,0 +1,2284 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>⚽ Mundial Tennis 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+/* ── PALETA TENNIS BRAND ── */
+:root{
+  /* Fondos — charcoal cálido extraído de fachada Tennis */
+  --az:  #1A1815;   /* fondo principal  (era navy)     */
+  --az2: #201D17;   /* tarjetas         (era blue card) */
+  --az3: #2A2620;   /* tarjetas claras  (era light blue)*/
+  /* Verdes para indicadores — sage muted */
+  --vd:  #3E6644;
+  --vd2: #579960;
+  /* Oro del torneo — acento principal, cálido */
+  --or:  #C9A84C;
+  --or2: #E8C878;   /* oro suave (era amarillo FIFA) */
+  /* Acento Tennis — gris-oliva cálido de la fachada */
+  --tn:  #727068;   /* Tennis neutral */
+  --tn2: #9d7e65;   /* Tennis warm interior */
+  --tn3: #F0E8DC;   /* Tennis cream — texto destacado */
+  /* Otros */
+  --rd:  #C0392B;
+  --pu:  #6A4A60;
+  --bl:  #3A6880;
+  --w:   #fff;
+  --g3:  #9A9088;
+  --sh:  0 4px 24px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Roboto',sans-serif;background:#111010;color:#F0E8DC;min-height:100vh}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--az) 0%,#1a2d6e 55%,var(--vd) 100%);
+  padding:0 18px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.hdr-l{display:flex;align-items:center;gap:12px;padding:11px 0}
+.ball{font-size:2rem;animation:spin 10s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.htitle{font-family:'Bebas Neue';font-size:1.6rem;color:var(--or2);letter-spacing:2px;line-height:1}
+.hsub{font-size:.62rem;color:rgba(255,255,255,.58);letter-spacing:3px;text-transform:uppercase}
+.hbadge{background:var(--or);color:var(--az);padding:5px 12px;border-radius:18px;font-size:.7rem;font-weight:700}
+/* NAV */
+.nav{background:rgba(13,27,75,.96);backdrop-filter:blur(6px);
+  display:flex;overflow-x:auto;border-bottom:2px solid rgba(201,168,76,.35);
+  scrollbar-width:none;position:sticky;top:58px;z-index:199}
+.nav::-webkit-scrollbar{display:none}
+.nb{flex:none;padding:10px 16px;cursor:pointer;font-size:.76rem;font-weight:600;
+  color:rgba(255,255,255,.52);border:none;background:none;transition:.2s;
+  text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;
+  border-bottom:3px solid transparent;margin-bottom:-2px}
+.nb:hover{color:var(--or2);background:rgba(255,255,255,.04)}
+.nb.active{color:var(--or2);border-bottom-color:var(--or2);font-weight:700}
+/* PAGES */
+.page{display:none;padding:20px 18px;max-width:1440px;margin:0 auto;animation:fi .3s ease}
+.page.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* CARD */
+.card{background:var(--az2);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,.07)}
+/* SECTION TITLE */
+.st{font-family:'Bebas Neue';font-size:1.35rem;color:var(--or2);letter-spacing:2px;
+  margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.st::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,var(--or2),transparent)}
+/* KPI */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:11px;margin-bottom:22px}
+.kpi{background:linear-gradient(135deg,var(--az2),var(--az3));border-radius:11px;
+  padding:14px 10px;text-align:center;border:1px solid rgba(201,168,76,.2);transition:.2s}
+.kpi:hover{transform:translateY(-2px);border-color:var(--or)}
+.ki{font-size:1.6rem;margin-bottom:4px}
+.kv{font-family:'Bebas Neue';font-size:1.9rem;color:var(--or2);line-height:1}
+.kl{font-size:.6rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+/* TABLE */
+.tw{overflow-x:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+thead th{background:var(--az);color:var(--or2);padding:8px 10px;text-align:left;
+  font-weight:700;text-transform:uppercase;font-size:.68rem;letter-spacing:.4px;
+  cursor:pointer;user-select:none;white-space:nowrap}
+thead th:hover{background:var(--az3)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.05);transition:.1s}
+tbody tr:hover{background:rgba(255,255,255,.05)}
+tbody td{padding:7px 10px;vertical-align:middle}
+.p1{background:rgba(201,168,76,.18)!important}
+.p2{background:rgba(192,192,192,.1)!important}
+.p3{background:rgba(200,120,50,.1)!important}
+.pts{font-family:'Bebas Neue';font-size:1.2rem;color:var(--or2)}
+.badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:.63rem;font-weight:700}
+.bw{background:rgba(26,122,60,.55);color:#7effa0}
+.bd{background:rgba(201,168,76,.4);color:var(--or2)}
+.bl2{background:rgba(192,57,43,.45);color:#ff9999}
+/* CONTROLS */
+.ctrl{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.srch{flex:1;min-width:170px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  border-radius:8px;padding:8px 13px;color:#fff;font-size:.82rem;outline:none}
+.srch::placeholder{color:rgba(255,255,255,.32)}
+.srch:focus{border-color:var(--or)}
+.sel{background:var(--az2);border:1px solid rgba(255,255,255,.16);border-radius:8px;
+  padding:8px 11px;color:#fff;font-size:.78rem;cursor:pointer;outline:none}
+.sel:focus{border-color:var(--or)}
+/* WEEK BANNER */
+.wb{border-radius:13px;padding:18px 22px;margin-bottom:20px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  border:1px solid rgba(255,255,255,.1)}
+.wb-info{flex:1;min-width:180px}
+.wb-lbl{font-family:'Bebas Neue';font-size:1.5rem;letter-spacing:2px;line-height:1;margin-bottom:3px}
+.wb-dates{font-size:.76rem;color:rgba(255,255,255,.6);margin-bottom:8px}
+.wb-rule{background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;font-size:.78rem;line-height:1.5}
+.wb-rule b{color:var(--or2)}
+.wstatus{font-size:.78rem;padding:5px 13px;border-radius:18px;font-weight:700;white-space:nowrap}
+.sta{background:rgba(192,57,43,.5)!important;color:#ff9999}
+.std{background:rgba(26,122,60,.5)!important;color:#7effa0}
+.stp{background:rgba(255,255,255,.09)!important;color:rgba(255,255,255,.5)}
+/* UPLOAD */
+.upload-z{border:2px dashed rgba(255,255,255,.22);border-radius:13px;
+  padding:28px 22px;text-align:center;cursor:pointer;transition:.2s;
+  background:rgba(255,255,255,.03);position:relative;margin-bottom:18px}
+.upload-z:hover,.upload-z.drag{border-color:var(--or2);background:rgba(201,168,76,.06)}
+.up-icon{font-size:2.5rem;margin-bottom:8px;display:block}
+.up-t{font-size:.95rem;font-weight:700;margin-bottom:5px}
+.up-h{font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:10px}
+.up-h b{color:var(--or2)}
+.btn-up{display:inline-block;background:var(--or);color:var(--az);padding:8px 20px;
+  border-radius:8px;font-weight:700;font-size:.82rem;pointer-events:auto;cursor:pointer}
+.file-wrap{position:relative;display:inline-block;margin-bottom:8px}
+.file-wrap input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.file-wrap .btn-up{pointer-events:none;position:relative;z-index:1}
+.btn-drive{background:linear-gradient(135deg,#2980b9,#1A7A3C);border:none}
+.up-loaded{display:flex;align-items:center;gap:10px;padding:11px 16px;
+  background:rgba(26,122,60,.2);border:1px solid var(--vd2);border-radius:10px;margin-bottom:14px}
+.up-loaded .ic{font-size:1.4rem}
+.up-loaded .inf{flex:1}
+.up-loaded .fn{font-weight:700;font-size:.86rem}
+.up-loaded .fm{font-size:.7rem;color:rgba(255,255,255,.5)}
+.btn-ch{background:rgba(255,255,255,.09);border:none;color:rgba(255,255,255,.65);
+  padding:5px 11px;border-radius:6px;cursor:pointer;font-size:.72rem}
+.btn-ch:hover{background:rgba(255,255,255,.18);color:#fff}
+/* BUTTONS */
+.abar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.btn{padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-size:.75rem;font-weight:700;transition:.2s}
+.bsv{background:var(--vd);color:#fff}.bsv:hover{background:var(--vd2)}
+.bex{background:var(--or);color:var(--az)}.bex:hover{background:var(--or2)}
+.bcl{background:rgba(192,57,43,.4);color:#ff9999;border:1px solid rgba(192,57,43,.3)}.bcl:hover{background:rgba(192,57,43,.7)}
+/* GROUP COMPETITION CARD */
+.gc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:16px}
+.gc{background:var(--az2);border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.gc-hdr{padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.gc-hdr h3{font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:1.5px}
+.gc-tipo{font-size:.65rem;padding:3px 10px;border-radius:10px;font-weight:700}
+.gc-hdr-meta{font-size:.68rem;color:rgba(255,255,255,.45)}
+.gc-cond{padding:7px 14px;font-size:.72rem;display:flex;align-items:center;gap:6px}
+/* STORE ROW IN GROUP */
+.store-row{display:grid;align-items:center;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  gap:6px;font-size:.78rem;transition:.1s}
+.store-row:hover{background:rgba(255,255,255,.04)}
+.store-row:last-child{border:none}
+.sr-name{font-weight:600;font-size:.8rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-zona{font-size:.62rem;color:rgba(255,255,255,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ind-box{text-align:center;min-width:70px}
+.ind-val{font-size:.82rem;font-weight:700}
+.ind-lbl{font-size:.58rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.3px}
+.pts-box{text-align:center;min-width:50px}
+.no-data{color:rgba(255,255,255,.25);font-style:italic;font-size:.7rem}
+/* BADGES for winners */
+.win-cumpl{color:#7effa0;font-size:.65rem;padding:1px 6px;background:rgba(26,122,60,.4);border-radius:4px}
+.win-upt{color:#7ec8ff;font-size:.65rem;padding:1px 6px;background:rgba(41,128,185,.4);border-radius:4px}
+.win-conv{color:#e0b0ff;font-size:.65rem;padding:1px 6px;background:rgba(106,26,122,.4);border-radius:4px}
+.ineligible{opacity:.55}
+.inel-tag{font-size:.62rem;color:#ff9999;padding:1px 6px;background:rgba(192,57,43,.3);border-radius:4px}
+/* PROGRESS BAR */
+.prog{background:rgba(255,255,255,.1);border-radius:3px;height:4px;overflow:hidden}
+.prog-f{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--vd2),var(--or2));transition:width .5s}
+/* WEEK STATS BAR */
+.wstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-bottom:18px}
+.ws{background:rgba(255,255,255,.04);border-radius:9px;padding:10px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.wsv{font-family:'Bebas Neue';font-size:1.4rem;color:var(--or2)}
+.wsl{font-size:.6rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.4px}
+/* MODAL */
+.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
+  z-index:500;align-items:center;justify-content:center;padding:14px}
+.mov.open{display:flex}
+.mo{background:var(--az2);border-radius:15px;padding:22px;max-width:500px;
+  width:100%;border:1px solid var(--or);position:relative;animation:fi .2s;max-height:90vh;overflow-y:auto}
+.mx{position:absolute;top:12px;right:13px;cursor:pointer;font-size:1.2rem;
+  color:rgba(255,255,255,.4);background:none;border:none}
+.mx:hover{color:#fff}
+/* PRIZE CARDS */
+.pr-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px}
+.pr{border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:7px}
+.pr-ico{font-size:2rem}
+.pr-t{font-family:'Bebas Neue';font-size:1.2rem;letter-spacing:1px}
+.pr-val{font-size:1.5rem;font-weight:700}
+.pr-d{font-size:.78rem;color:rgba(255,255,255,.7)}
+.pr-c{font-size:.66rem;padding:2px 8px;background:rgba(255,255,255,.08);border-radius:8px;align-self:flex-start}
+/* PODIUM */
+.podium{display:flex;align-items:flex-start;justify-content:center;gap:14px;
+  margin:12px 0 28px;padding-bottom:60px}
+.pod{border-radius:14px;display:flex;flex-direction:column;align-items:center;
+  padding:18px 16px 16px;min-width:150px;max-width:220px;flex:1;box-sizing:border-box}
+.pod-1{background:linear-gradient(145deg,rgba(201,168,76,.32),rgba(201,168,76,.1));
+  border:2px solid var(--or);transform:translateY(0);box-shadow:0 4px 24px rgba(201,168,76,.25)}
+.pod-2{background:linear-gradient(145deg,rgba(180,180,180,.22),rgba(180,180,180,.07));
+  border:1px solid #909090;transform:translateY(34px)}
+.pod-3{background:linear-gradient(145deg,rgba(200,120,50,.22),rgba(200,120,50,.07));
+  border:1px solid #c87533;transform:translateY(60px)}
+.pod-ico{font-size:2.2rem;margin-bottom:6px;line-height:1}
+.pod-n{font-size:.8rem;font-weight:700;text-align:center;line-height:1.35;
+  margin-bottom:5px;word-break:break-word;width:100%}
+.pod-pts{font-family:'Bebas Neue';font-size:1.7rem;color:var(--or2);margin:2px 0 4px;line-height:1}
+.pod-val{font-size:1rem;font-weight:700;margin-top:6px;text-align:center}
+.pod-div{width:70%;height:1px;background:rgba(255,255,255,.15);margin:8px auto}
+/* CHART */
+.chw{height:200px;position:relative}
+/* SCROLL TOP */
+.scrtop{position:fixed;bottom:20px;right:20px;background:var(--or);color:var(--az);
+  border:none;border-radius:50%;width:40px;height:40px;font-size:1rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;z-index:300;box-shadow:var(--sh)}
+.scrtop.show{display:flex}
+/* TOAST */
+.toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);
+  background:#1a1a2e;border:1px solid var(--or);color:#fff;padding:9px 18px;
+  border-radius:7px;font-size:.8rem;z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+/* ERR */
+.err{background:rgba(192,57,43,.2);border:1px solid var(--rd);border-radius:8px;
+  padding:10px 14px;margin-bottom:12px;font-size:.8rem;color:#ff9999}
+/* RESPONSIVE */
+@media(max-width:600px){
+  .htitle{font-size:1.3rem}.page{padding:13px 11px}
+  .gc-grid{grid-template-columns:1fr}.pr-wrap{grid-template-columns:1fr}
+}
+/* GROUP TYPE COLORS */
+.tipo-linea{background:rgba(26,122,60,.35);color:#7effa0}
+.tipo-outlet{background:rgba(41,128,185,.35);color:#7ec8ff}
+.tipo-remat{background:rgba(192,57,43,.35);color:#ff9999}
+/* ── TENNIS BRAND HEADER ── */
+.hdr{position:relative;overflow:hidden;padding:0;min-height:72px;
+  background:linear-gradient(135deg,#1A1815 0%,#252018 55%,#1E1A14 100%);
+  border-bottom:2px solid var(--or)}
+/* Separador vertical cálido en el header */
+.hdr-divider{width:1px;height:40px;background:rgba(201,168,76,.3);margin:0 16px;flex-shrink:0}
+.hdr-content{position:relative;z-index:2;display:flex;align-items:center;
+  justify-content:space-between;padding:0 20px;height:72px}
+/* Logo Tennis — nombre limpio, tipografía de marca */
+.hdr-logo-wrap{display:flex;align-items:center;gap:0;flex-shrink:0;height:50px;
+  border-right:1px solid rgba(201,168,76,.25);padding-right:18px}
+.hdr-logo-text{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.hdr-logo-text .brand-name{font-family:'Roboto',sans-serif;font-weight:300;
+  font-size:1.7rem;color:var(--tn3);letter-spacing:8px;line-height:1;
+  text-transform:lowercase}
+.hdr-logo-text .brand-tagline{font-size:.52rem;color:var(--or);letter-spacing:4px;
+  text-transform:uppercase;font-weight:500}
+/* Title central */
+.hdr-center{flex:1;text-align:center;padding:0 12px}
+.htitle{font-family:'Bebas Neue';font-size:1.45rem;color:var(--or2);
+  letter-spacing:3px;line-height:1}
+.hsub{font-size:.56rem;color:rgba(240,232,220,.5);letter-spacing:4px;
+  text-transform:uppercase;margin-top:3px}
+/* Motto band — Tennis cream oscuro */
+.motto{background:#161310;border-bottom:1px solid rgba(201,168,76,.2);
+  text-align:center;padding:8px 20px}
+.motto-text{font-size:.72rem;font-style:italic;
+  color:rgba(240,232,220,.58);letter-spacing:.5px}
+.motto-text b{color:var(--or2);font-style:normal}
+/* NAV — charcoal cálido Tennis */
+.nav{background:rgba(26,24,21,.97)!important;
+  border-bottom:2px solid rgba(201,168,76,.3)!important}
+.nb.active{color:var(--or2)!important;border-bottom-color:var(--or)!important}
+.nb:hover{color:var(--tn3)!important;background:rgba(201,168,76,.06)!important}
+/* CARD — tierra cálida Tennis */
+.card{background:var(--az2)!important;border-color:rgba(201,168,76,.1)!important}
+/* SECTION TITLE */
+.st{color:var(--or2)!important}
+.st::after{background:linear-gradient(90deg,var(--or),transparent)!important}
+/* KPI cards */
+.kpi{background:linear-gradient(135deg,var(--az2),var(--az3))!important;
+  border-color:rgba(201,168,76,.18)!important}
+.kv{color:var(--or2)!important}
+/* BADGE header */
+.hbadge{background:var(--or)!important;color:#1A1815!important;font-weight:700!important}
+/* TABLE headers */
+thead th{background:var(--az)!important;color:var(--or2)!important}
+thead th:hover{background:var(--az3)!important}
+/* WEEK BANNER */
+.wb{background:linear-gradient(135deg,rgba(201,168,76,.12),var(--az2))!important}
+/* TYPE BADGES — Tennis tones */
+.tipo-linea{background:rgba(62,102,68,.45);color:#9BDFAA}
+.tipo-outlet{background:rgba(58,104,128,.45);color:#9ED4F0}
+.tipo-remat{background:rgba(192,57,43,.35);color:#FFB0A8}
+/* UPLOAD ZONE */
+.upload-z{border-color:rgba(201,168,76,.25)!important;
+  background:rgba(201,168,76,.03)!important}
+.upload-z:hover,.upload-z.drag{border-color:var(--or2)!important;
+  background:rgba(201,168,76,.08)!important}
+/* SCROLL TOP */
+.scrtop{background:var(--or)!important;color:#1A1815!important}
+/* PODIUM dark-mode override */
+.pod-1{background:linear-gradient(145deg,rgba(201,168,76,.30),rgba(201,168,76,.10))!important;
+  border:2px solid var(--or)!important;box-shadow:0 4px 24px rgba(201,168,76,.22)!important}
+/* AWARDS */
+.award{background:var(--az2)!important}
+/* ── BALÓN TNS ── */
+.tns-ball{display:inline-block;border-radius:50%;
+  box-shadow:0 6px 28px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.4),
+             inset 0 -3px 8px rgba(0,0,0,.15);
+  overflow:hidden;flex-shrink:0;background:#fff}
+.tns-ball img{width:100%;height:100%;object-fit:cover;
+  display:block;border-radius:50%}
+/* Ball sizes */
+.ball-xl{width:120px;height:120px}
+.ball-lg{width:80px;height:80px}
+.ball-md{width:52px;height:52px}
+.ball-sm{width:36px;height:36px}
+.ball-xs{width:24px;height:24px}
+/* Animated ball (float) */
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-8px) rotate(6deg)}}
+.ball-float{animation:float 4s ease-in-out infinite}
+/* Ball separator */
+.ball-sep{display:flex;align-items:center;gap:14px;margin:22px 0}
+.ball-sep::before,.ball-sep::after{content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent)}
+/* Ball hero row */
+.ball-row{display:flex;justify-content:center;align-items:center;
+  gap:20px;padding:12px 0;flex-wrap:wrap}
+/* card-ball: watermark se inyecta via JS para evitar duplicar base64 */
+.card-ball{position:relative;overflow:hidden}
+.card-ball-wm{position:absolute;bottom:-16px;right:-16px;
+  width:72px;height:72px;border-radius:50%;opacity:.08;
+  object-fit:cover;pointer-events:none}
+/* SPECIAL AWARD CARDS */
+.award-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:20px}
+.award{border-radius:13px;padding:16px;border:1px solid rgba(255,255,255,.1);
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.award::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.award-copa::before{background:linear-gradient(90deg,var(--or2),#fff,var(--or2))}
+.award-plata::before{background:linear-gradient(90deg,#c0c0c0,#fff,#c0c0c0)}
+.award-bronce::before{background:linear-gradient(90deg,#c87533,#f0a060,#c87533)}
+.award-upt::before{background:linear-gradient(90deg,#7ec8ff,#fff,#7ec8ff)}
+.award-conv::before{background:linear-gradient(90deg,#e0b0ff,#fff,#e0b0ff)}
+.award-puskas::before{background:linear-gradient(90deg,#ff9999,#ffcc99,#ff9999)}
+.award-grupo::before{background:linear-gradient(90deg,#7effa0,#fff,#7effa0)}
+.award-ico{font-size:1.9rem}
+.award-name{font-family:'Bebas Neue';font-size:1.05rem;letter-spacing:1.5px;line-height:1.1}
+.award-desc{font-size:.74rem;color:rgba(255,255,255,.65);line-height:1.5}
+.award-winner{font-size:.78rem;font-weight:700;padding:5px 10px;
+  background:rgba(255,255,255,.07);border-radius:7px;margin-top:4px}
+
+/* ── LOADER ── */
+.loader{position:fixed;inset:0;background:var(--az);z-index:1000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;transition:opacity .4s ease}
+.loader.hide{opacity:0;pointer-events:none}
+.loader-ball{animation:spin 1s linear infinite}
+.loader-text{font-family:'Bebas Neue';color:var(--or2);letter-spacing:2px;font-size:1.1rem}
+
+/* ponytail: content-visibility para cards de grupo y reglamento */
+.gc{
+  content-visibility:auto;
+  contain-intrinsic-size:auto none auto 220px;
+}
+/* ponytail: lazy rendering para reglamento largo en inicio */
+#rules-wrap{
+  content-visibility:auto;
+  contain-intrinsic-size:auto none auto 2000px;
+}
+
+</style>
+<body>
+<!-- LOADER -->
+<div id="loader" class="loader">
+  <div class="tns-ball ball-lg loader-ball">
+    <img class="ball-lazy" alt="TNS" src="ball.png">
+  </div>
+  <div class="loader-text">CARGANDO MUNDIAL TENNIS 2026...</div>
+</div>
+<header class="hdr">
+  <div class="hdr-content">
+    <!-- Logo Tennis -->
+    <div class="hdr-logo-wrap">
+      <div class="hdr-logo-text">
+        <span class="brand-name">tennis</span>
+        <span class="brand-tagline">Colombia</span>
+      </div>
+    </div>
+    <div class="hdr-divider"></div>
+    <!-- Balones header — src inyectado por JS (una sola copia base64) -->
+    <div class="tns-ball ball-md ball-float" style="margin-right:10px">
+      <img class="ball-lazy" alt="TNS" src="ball.png">
+    </div>
+    <div class="hdr-center">
+      <div class="htitle">Copa Mundial de Ventas 2026</div>
+      <div class="hsub">Competencia Comercial &nbsp;·&nbsp; Junio 2026</div>
+    </div>
+    <div class="tns-ball ball-md ball-float" style="margin-left:10px;animation-delay:-2s">
+      <img class="ball-lazy" alt="TNS" src="ball.png">
+    </div>
+    <div class="hdr-divider"></div>
+    <div id="hbadge" class="hbadge">Semana 1 — 01 Jun 2026</div>
+  </div>
+</header>
+<div class="motto">
+  <div class="motto-text">
+    “<b>Cada venta es un gol</b>, cada cliente una oportunidad
+    y cada tienda una selección que <b>lucha por la gloria</b>.”
+  </div>
+</div>
+<nav class="nav">
+  <button class="nb" data-page="inicio">🏠 Inicio</button>
+  <button class="nb active" data-page="s1">📅 Semana 1</button>
+  <button class="nb" data-page="s2">📅 Semana 2</button>
+  <button class="nb" data-page="s3">📅 Semana 3</button>
+  <button class="nb" data-page="s4">📅 Semana 4</button>
+  <button class="nb" data-page="acumulado">🏆 Acumulado</button>
+  <button class="nb" id="btn-guardar" title="Guarda el archivo con todos los datos de las semanas cargadas" style="margin-left:auto;background:rgba(201,168,76,.18);border-color:var(--or2);color:var(--or2)">💾 Guardar</button>
+</nav>
+<div id="page-inicio" class="page" data-ok=""></div>
+<div id="page-s1" class="page active" data-ok=""></div>
+<div id="page-s2" class="page"></div>
+<div id="page-s3" class="page"></div>
+<div id="page-s4" class="page"></div>
+<div id="page-acumulado" class="page" data-ok=""></div>
+<div class="mov" id="modal">
+  <div class="mo"><button class="mx">✕</button>
+    <div id="mbody"></div></div></div>
+<div class="toast" id="toast">✅ Semana 1: 97 tiendas cargadas. Guardando archivo...</div>
+<button class="scrtop show" id="scrtop">↑</button>
+<script>
+// ── BALÓN TNS — fuente embebida ──────────────────────────────
+function ballHTML(cls='ball-md', extra=''){
+  return `<div class="tns-ball ${cls}" ${extra}>
+    <img class="ball-lazy" alt="TNS">
+  </div>`;
+}
+function ballSep(title=''){
+  return `<div class="ball-sep">
+    ${ballHTML('ball-sm')}
+    ${title?`<span style="font-family:'Bebas Neue';font-size:1rem;color:var(--or2);letter-spacing:2px">${title}</span>`:''}
+    ${ballHTML('ball-sm')}
+  </div>`;
+}
+function ballRow(sizes=['ball-lg','ball-md','ball-xl','ball-md','ball-lg'],delays=[0,-1,-2,-3,-4]){
+  return `<div class="ball-row">
+    ${sizes.map((s,i)=>`<div class="tns-ball ${s} ball-float" style="animation-delay:${delays[i]}s">
+      <img class="ball-lazy" alt="TNS"></div>`).join('')}
+  </div>`;
+}
+
+// ── DATA ─────────────────────────────────────────────────────
+const D = {"meta":{"semana_actual":1,"fechas":{"1":["01 Jun 2026","07 Jun 2026"],"2":["08 Jun 2026","14 Jun 2026"],"3":["15 Jun 2026","21 Jun 2026"],"4":["22 Jun 2026","30 Jun 2026"]},"semana_config":{"1":{"label":"Semana 1","dates":"Lunes 1 – Domingo 7 de Junio","dias":"Jun 1-7","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"2":{"label":"Semana 2","dates":"Lunes 8 – Domingo 14 de Junio","dias":"Jun 8-14","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"3":{"label":"Semana 3","dates":"Lunes 15 – Domingo 21 de Junio","dias":"Jun 15-21","icon":"📅","indicadores":["cumplimiento","upt","conversion"]},"4":{"label":"Semana 4","dates":"Lunes 22 – Martes 30 de Junio","dias":"Jun 22-30","icon":"📅","indicadores":["cumplimiento","upt","conversion"]}},"premios":{"ganador_grupo":500000,"campeon":2000000,"subcampeon":1000000,"tercer_puesto":500000,"bota_upt":1000000,"botin_conv":1000000,"puskas":500000,"total_premios":15500000},"total_tiendas":94,"total_grupos":17,"grupos_por_tipo":{"ALMACÉN REMATADOR":["Grupo Rematadores"],"ALMACÉN OUTLET":["Outlet A","Outlet B","Outlet C","Outlet D"],"ALMACÉN DE LÍNEA":["Línea A","Línea B","Línea C","Línea D","Línea E","Línea F","Línea G","Línea H","Línea I","Línea J","Línea K","Línea L"]},"condicion_min_cumpl":1.0,"puntos_por_categoria":3,"max_puntos_semana":9,"max_puntos_total":36}};
+D.grupos = [];
+let META = D.meta;
+const COND = META.condicion_min_cumpl;   // 1.00
+
+// ── SEMANA CONFIG ─────────────────────────────────────────────
+const SCFG = {
+  1:{col:'#1A7A3C',light:'rgba(26,122,60,',  dias:'Jun 1-7',   n:'SEMANA 1'},
+  2:{col:'#2980b9',light:'rgba(41,128,185,',  dias:'Jun 8-14',  n:'SEMANA 2'},
+  3:{col:'#6A1A7A',light:'rgba(106,26,122,', dias:'Jun 15-21', n:'SEMANA 3'},
+  4:{col:'#C9A84C',light:'rgba(201,168,76,',  dias:'Jun 22-30', n:'SEMANA 4'},
+};
+
+// ── STATE ──────────────────────────────────────────────────────
+const SK = 'mundial_tennis_2026_v3';
+// weekData[sem] = { storeName: {cumpl, upt, conv, venta, presupuesto} }
+let weekData = {1:{"EVENTOS TENNIS CARNAVAL BQUILLA":{"cumpl":1.376,"upt":4.27,"conv":null,"venta":null,"presupuesto":null,"ticket":null},"BIMA":{"cumpl":0.99,"upt":3.45,"conv":0.16699999999999998,"venta":null,"presupuesto":null,"ticket":null},"ROSELLÓN":{"cumpl":0.853,"upt":4.04,"conv":0.285,"venta":null,"presupuesto":null,"ticket":null},"TENNIS GUAYABAL":{"cumpl":1.2429999999999999,"upt":2.39,"conv":0.21,"venta":null,"presupuesto":null,"ticket":null},"ZONA INDUSTRIAL 1":{"cumpl":1.03,"upt":2.74,"conv":0.16399999999999998,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICO NEIVA":{"cumpl":1.8130000000000002,"upt":2.2,"conv":0.171,"venta":null,"presupuesto":null,"ticket":null},"MONTERIA CENTRO":{"cumpl":1.365,"upt":2.5,"conv":0.204,"venta":null,"presupuesto":null,"ticket":null},"ZONA INDUSTRIAL 3":{"cumpl":0.797,"upt":2.33,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"UNICO PASTO":{"cumpl":0.8340000000000001,"upt":2.4,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"UNICO CALI":{"cumpl":0.856,"upt":2.34,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"TENNIS TOBERIN":{"cumpl":0.976,"upt":2.34,"conv":0.174,"venta":null,"presupuesto":null,"ticket":null},"TOP MARK ANTARES":{"cumpl":0.9359999999999999,"upt":2.09,"conv":0.162,"venta":null,"presupuesto":null,"ticket":null},"ARAUCO PREMIUM OUTLET SOPO":{"cumpl":0.555,"upt":2.18,"conv":0.12300000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICO BARRANQUILLA":{"cumpl":0.711,"upt":2.19,"conv":0.165,"venta":null,"presupuesto":null,"ticket":null},"TENNIS EL EDEN":{"cumpl":0.8640000000000001,"upt":1.92,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"FLORESTA OUTLET":{"cumpl":1.517,"upt":2.26,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"LA HERRADURA":{"cumpl":1.245,"upt":2.18,"conv":0.193,"venta":null,"presupuesto":null,"ticket":null},"TENNIS CHAPINERO OUTLET":{"cumpl":1.146,"upt":1.95,"conv":0.179,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICO BUCARAMANGA":{"cumpl":0.8740000000000001,"upt":2.04,"conv":0.1,"venta":null,"presupuesto":null,"ticket":null},"UNICO DOS QUEBRADAS":{"cumpl":0.621,"upt":2.23,"conv":0.175,"venta":null,"presupuesto":null,"ticket":null},"MANIZALES CENTRO":{"cumpl":1.149,"upt":2.09,"conv":0.215,"venta":null,"presupuesto":null,"ticket":null},"DE MODA OUTLET":{"cumpl":1.0979999999999999,"upt":1.91,"conv":0.2,"venta":null,"presupuesto":null,"ticket":null},"GRAN PLAZA":{"cumpl":1.084,"upt":1.8,"conv":0.151,"venta":null,"presupuesto":null,"ticket":null},"PUERTA DEL NORTE 1":{"cumpl":1.036,"upt":1.8,"conv":0.158,"venta":null,"presupuesto":null,"ticket":null},"LA CENTRAL":{"cumpl":0.8190000000000001,"upt":2.12,"conv":0.147,"venta":null,"presupuesto":null,"ticket":null},"ALAMEDAS DEL SINU":{"cumpl":1.375,"upt":2.34,"conv":0.155,"venta":null,"presupuesto":null,"ticket":null},"CACIQUE":{"cumpl":1.02,"upt":2.48,"conv":0.14,"venta":null,"presupuesto":null,"ticket":null},"VENTURA PLAZA CUCUTA":{"cumpl":0.821,"upt":2.07,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"SAN SILVESTRE":{"cumpl":0.8859999999999999,"upt":2.46,"conv":0.149,"venta":null,"presupuesto":null,"ticket":null},"ANDINO":{"cumpl":0.779,"upt":2.41,"conv":0.13699999999999998,"venta":null,"presupuesto":null,"ticket":null},"GRAN ESTACION":{"cumpl":0.7290000000000001,"upt":2.41,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"PASTO CENTRO":{"cumpl":1.4609999999999999,"upt":2.42,"conv":0.105,"venta":null,"presupuesto":null,"ticket":null},"TENNIS JARDIN PLAZA CUCUTA":{"cumpl":1.338,"upt":3.23,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"PLAZA CENTRAL":{"cumpl":1.345,"upt":2.46,"conv":0.098,"venta":null,"presupuesto":null,"ticket":null},"GUACARÍ":{"cumpl":1.179,"upt":2.2,"conv":0.146,"venta":null,"presupuesto":null,"ticket":null},"TITAN":{"cumpl":0.825,"upt":1.93,"conv":0.107,"venta":null,"presupuesto":null,"ticket":null},"SANTA FE MEDELLIN":{"cumpl":0.868,"upt":2.04,"conv":0.171,"venta":null,"presupuesto":null,"ticket":null},"LA ESTACION IBAGUE":{"cumpl":1.165,"upt":2.29,"conv":0.13,"venta":null,"presupuesto":null,"ticket":null},"SAN FRANCISCO SINCELEJO":{"cumpl":1.31,"upt":2.07,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MULTIPLAZA BOGOTA":{"cumpl":1.14,"upt":2.16,"conv":0.091,"venta":null,"presupuesto":null,"ticket":null},"LA SABANA VILLAVICENCIO":{"cumpl":0.986,"upt":2.17,"conv":0.08900000000000001,"venta":null,"presupuesto":null,"ticket":null},"CHIPICHAPE":{"cumpl":0.8059999999999999,"upt":2.1,"conv":0.15,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICENTRO CALI":{"cumpl":0.78,"upt":2.06,"conv":0.11599999999999999,"venta":null,"presupuesto":null,"ticket":null},"BUENA VISTA MONTERIA":{"cumpl":1.79,"upt":1.98,"conv":0.16899999999999998,"venta":null,"presupuesto":null,"ticket":null},"PRIMAVERA URBANA":{"cumpl":1.09,"upt":2.26,"conv":0.127,"venta":null,"presupuesto":null,"ticket":null},"SAN PEDRO NEIVA":{"cumpl":1.058,"upt":2.02,"conv":0.133,"venta":null,"presupuesto":null,"ticket":null},"TESORO 1":{"cumpl":1.085,"upt":2.16,"conv":0.136,"venta":null,"presupuesto":null,"ticket":null},"VIVA BARRANQUILLA":{"cumpl":0.9,"upt":2.06,"conv":0.08800000000000001,"venta":null,"presupuesto":null,"ticket":null},"MONEDA":{"cumpl":0.675,"upt":1.93,"conv":0.126,"venta":null,"presupuesto":null,"ticket":null},"CARACOLI":{"cumpl":1.3730000000000002,"upt":2.05,"conv":0.11800000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO VILLAVICENCIO":{"cumpl":1.099,"upt":1.72,"conv":0.113,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALLPLAZA NQS":{"cumpl":0.775,"upt":2.17,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALL PLAZA BARRANQUILLA":{"cumpl":0.9520000000000001,"upt":2.21,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"ARMENIA":{"cumpl":0.72,"upt":2.01,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"IPIALES":{"cumpl":0.652,"upt":2.19,"conv":0.059000000000000004,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO BOGOTA 2":{"cumpl":1.195,"upt":1.92,"conv":0.09699999999999999,"venta":null,"presupuesto":null,"ticket":null},"TENNIS UNICENTRO PASTO":{"cumpl":1.124,"upt":2.09,"conv":0.083,"venta":null,"presupuesto":null,"ticket":null},"AMERICAS":{"cumpl":0.937,"upt":2.07,"conv":0.109,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO ARMENIA":{"cumpl":0.77,"upt":1.96,"conv":0.126,"venta":null,"presupuesto":null,"ticket":null},"CARIBE PLAZA/CGENA":{"cumpl":0.9420000000000001,"upt":2.2,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"FUNDADORES MANIZALES":{"cumpl":0.7959999999999999,"upt":1.89,"conv":0.114,"venta":null,"presupuesto":null,"ticket":null},"JARDÍN PLAZA 2":{"cumpl":1.238,"upt":2.13,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"SALITRE":{"cumpl":1.189,"upt":2.02,"conv":0.11900000000000001,"venta":null,"presupuesto":null,"ticket":null},"PORTAL DEL QUINDIO":{"cumpl":1.043,"upt":2.09,"conv":0.128,"venta":null,"presupuesto":null,"ticket":null},"TENNIS ARKADIA":{"cumpl":0.945,"upt":2.2,"conv":0.121,"venta":null,"presupuesto":null,"ticket":null},"PREMIUM PLAZA":{"cumpl":0.975,"upt":1.93,"conv":0.13699999999999998,"venta":null,"presupuesto":null,"ticket":null},"CENTRO MAYOR":{"cumpl":0.972,"upt":2.17,"conv":0.10800000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS PLAZA FABRICATO":{"cumpl":1.179,"upt":2.84,"conv":0.131,"venta":null,"presupuesto":null,"ticket":null},"LA COLINA ARAUCO":{"cumpl":1.033,"upt":1.87,"conv":0.10300000000000001,"venta":null,"presupuesto":null,"ticket":null},"PEREIRA CENTRO":{"cumpl":0.78,"upt":1.89,"conv":0.12300000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS NUESTRO BOGOTA":{"cumpl":0.872,"upt":1.73,"conv":0.08800000000000001,"venta":null,"presupuesto":null,"ticket":null},"UNICENTRO MEDELLIN":{"cumpl":0.7040000000000001,"upt":1.99,"conv":0.159,"venta":null,"presupuesto":null,"ticket":null},"PUERTA DEL NORTE 2":{"cumpl":0.9159999999999999,"upt":2.09,"conv":0.16,"venta":null,"presupuesto":null,"ticket":null},"PARQUE ARBOLEDA":{"cumpl":1.39,"upt":1.99,"conv":0.10800000000000001,"venta":null,"presupuesto":null,"ticket":null},"JOSE MARIA CORDOVA":{"cumpl":1.1179999999999999,"upt":1.86,"conv":0.185,"venta":null,"presupuesto":null,"ticket":null},"SANTA FE 1":{"cumpl":1.0190000000000001,"upt":1.98,"conv":0.11199999999999999,"venta":null,"presupuesto":null,"ticket":null},"LOS MOLINOS":{"cumpl":0.922,"upt":1.84,"conv":0.009000000000000001,"venta":null,"presupuesto":null,"ticket":null},"TENNIS VIVA ENVIGADO":{"cumpl":0.877,"upt":2.03,"conv":0.11900000000000001,"venta":null,"presupuesto":null,"ticket":null},"MAYORCA 2":{"cumpl":0.831,"upt":1.77,"conv":0.141,"venta":null,"presupuesto":null,"ticket":null},"MALL PLAZA CARTAGENA":{"cumpl":1.161,"upt":2.49,"conv":0.092,"venta":null,"presupuesto":null,"ticket":null},"PALMIRA LLANOGRANDE":{"cumpl":1.127,"upt":2.07,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"TENNIS APARTADO PLAZA DEL RIO":{"cumpl":1.126,"upt":2.0,"conv":0.091,"venta":null,"presupuesto":null,"ticket":null},"SAN NICOLAS":{"cumpl":0.731,"upt":1.83,"conv":0.135,"venta":null,"presupuesto":null,"ticket":null},"TOP MARK MAYORCA":{"cumpl":0.847,"upt":2.13,"conv":0.11599999999999999,"venta":null,"presupuesto":null,"ticket":null},"VIVA LA CEJA":{"cumpl":1.2590000000000001,"upt":2.1,"conv":0.106,"venta":null,"presupuesto":null,"ticket":null},"TENNIS MALL PLAZA MANIZALES":{"cumpl":1.212,"upt":1.88,"conv":2.15,"venta":null,"presupuesto":null,"ticket":null},"IBAGUE":{"cumpl":1.099,"upt":1.95,"conv":0.124,"venta":null,"presupuesto":null,"ticket":null},"VIVA LAURELES MEDELLIN":{"cumpl":0.883,"upt":1.85,"conv":0.157,"venta":null,"presupuesto":null,"ticket":null},"MARIA VICTORIA":{"cumpl":0.9890000000000001,"upt":1.86,"conv":0.134,"venta":null,"presupuesto":null,"ticket":null},"CAMINO REAL":{"cumpl":1.0170000000000001,"upt":1.85,"conv":0.113,"venta":null,"presupuesto":null,"ticket":null},"LA FLORIDA MEDELLIN 2":{"cumpl":0.772,"upt":1.91,"conv":0.12,"venta":null,"presupuesto":null,"ticket":null},"METRO SAN ANTONIO":{"cumpl":0.735,"upt":1.63,"conv":0.102,"venta":null,"presupuesto":null,"ticket":null},"SAN NICOLAS 2":{"cumpl":0.948,"upt":1.87,"conv":0.10300000000000001,"venta":null,"presupuesto":null,"ticket":null},"SAN DIEGO 2":{"cumpl":0.828,"upt":1.73,"conv":0.166,"venta":null,"presupuesto":null,"ticket":null}}}; // <<<SEMANAS>>>
+let charts = {};
+let rkSort = {col:'pts_total', dir:-1};
+
+// Backup en localStorage (mismo navegador/ruta)
+function saveState(){try{localStorage.setItem(SK,JSON.stringify(weekData));}catch(e){}}
+
+function loadState(){
+  if(Object.keys(weekData).length>0)return;
+  try{
+    const r=localStorage.getItem(SK);
+    if(r)weekData=JSON.parse(r);
+  }catch(e){weekData={};}
+}
+
+// ── MOTOR DE GUARDADO ─────────────────────────────────────────
+// Construye el HTML con weekData embebido (fuente única de verdad)
+function buildHtmlConDatos(){
+  const MARKER='// <<<SEMANAS>>>';
+  let src=document.documentElement.outerHTML;
+  const mi=src.indexOf(MARKER);if(mi<0)return null;
+  const pre=src.slice(0,mi);
+  const wdi=pre.lastIndexOf('let weekData');if(wdi<0)return null;
+  return '<!DOCTYPE html>'+
+    pre.slice(0,wdi)+
+    `let weekData = ${JSON.stringify(weekData)}; ${MARKER}`+
+    src.slice(mi+MARKER.length);
+}
+
+// ── MÉTODO 1: File System Access API (Chrome/Edge) ────────────
+// Escribe directamente sobre el archivo en disco — sin mover nada
+let _fileHandle=null; // handle al archivo en disco (esta sesión)
+
+async function guardarConPicker(){
+  try{
+    // Primera vez: pide al usuario dónde guardar (cuadro de diálogo nativo)
+    if(!_fileHandle){
+      _fileHandle=await window.showSaveFilePicker({
+        suggestedName:'MUNDIAL_TENNIS_2026.html',
+        types:[{description:'Dashboard Mundial Tennis',accept:{'text/html':['.html']}}]
+      });
+    }
+    const html=buildHtmlConDatos();
+    if(!html){_fileHandle=null;return 'error';}
+    const w=await _fileHandle.createWritable();
+    await w.write(html); await w.close();
+    return 'ok';
+  }catch(e){
+    if(e.name==='AbortError')return 'cancelled'; // usuario cerró el diálogo
+    _fileHandle=null;
+    return 'error';
+  }
+}
+
+// ── MÉTODO 2: Descarga clásica (Firefox / fallback) ──────────
+function guardarComoDescarga(){
+  const html=buildHtmlConDatos();
+  if(!html)return false;
+  try{
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download='MUNDIAL_TENNIS_2026.html'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),8000);
+    return true;
+  }catch(e){return false;}
+}
+
+// ── GUARDAR: intenta picker → fallback descarga ───────────────
+async function guardar(){
+  const semsOK=[1,2,3,4].filter(s=>weekData[s]&&Object.keys(weekData[s]).length>0);
+  if(!semsOK.length){toast('Carga al menos una semana antes de guardar',3500);return false;}
+
+  if('showSaveFilePicker' in window){
+    const r=await guardarConPicker();
+    if(r==='ok'){
+      toast('✅ Archivo guardado en disco. Al reabrirlo los datos estarán disponibles.',4500);
+      return true;
+    }
+    if(r==='cancelled')return false;
+    // Si hubo error en el picker → intentar descarga
+  }
+  // Fallback: descarga
+  const ok=guardarComoDescarga();
+  if(ok){
+    showModalDescarga();
+    return true;
+  }
+  toast('Error al guardar. Intenta de nuevo.',4000);
+  return false;
+}
+
+// Alias para botones HTML
+async function guardarClick(){if(await checkPassword())guardar();}
+
+// Modal explicativo para el flujo de descarga (Firefox)
+function showModalDescarga(){
+  $('mbody').innerHTML=`
+  <div style="text-align:center;padding:16px 8px">
+    <div style="font-size:2.5rem;margin-bottom:10px">💾</div>
+    <div style="font-family:'Bebas Neue';font-size:1.4rem;color:var(--or2);margin-bottom:12px">
+      Archivo descargado con datos
+    </div>
+    <div style="background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.4);
+      border-radius:10px;padding:14px;font-size:.83rem;line-height:1.7;margin-bottom:14px">
+      <b style="color:#ffb347">Pasos para que los datos persistan:</b><br><br>
+      <b>1.</b> Ve a tu carpeta de <b>Descargas</b><br>
+      <b>2.</b> Mueve <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">MUNDIAL_TENNIS_2026.html</code>
+         al mismo lugar donde está el archivo actual<br>
+      <b>3.</b> Reemplaza el archivo anterior<br>
+      <b>4.</b> A partir de ahora <b>abre siempre el archivo nuevo</b>
+    </div>
+    <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:14px">
+      Consejo: usa Chrome o Edge para guardar automáticamente sin este paso.
+    </div>
+    <button style="background:var(--or2);color:#111;border:none;
+      border-radius:8px;padding:10px 28px;font-weight:700;cursor:pointer;font-size:.9rem">
+      Entendido
+    </button>
+  </div>`;
+  $('modal').classList.add('open');
+}
+
+// exportHtml: alias público para el botón Compartir del nav
+async function exportHtml(){if(await checkPassword())guardar();}
+
+// ── NAV ───────────────────────────────────────────────────────
+const PAGES=['inicio','s1','s2','s3','s4','acumulado'];
+function goTo(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const idx=PAGES.indexOf(p);if(idx>=0)document.querySelectorAll('.nb')[idx].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const el=document.getElementById('page-'+p);
+  if(!el.dataset.ok){renderPage(p);el.dataset.ok='1';}
+}
+function rePage(p){const el=document.getElementById('page-'+p);el.dataset.ok='';
+  if(el.classList.contains('active')){renderPage(p);el.dataset.ok='1';}}
+function renderPage(p){
+  if(p==='inicio')rInicio();
+  else if(p[0]==='s'&&p.length===2)rSemana(+p[1]);
+  else if(p==='acumulado')rAcumulado();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const norm=s=>String(s||'').toUpperCase().normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+const fP=v=>v==null?'—':(v*100).toFixed(1)+'%';
+const fN=(v,d=2)=>v==null?'—':(+v).toFixed(d);
+const fM=v=>v==null?'—':'$'+(v/1e6).toFixed(2)+'M';
+const fCOP=v=>'$'+v.toLocaleString('es-CO');
+const medal=p=>p===1?'🥇':p===2?'🥈':p===3?'🥉':p;
+const tipoClass=t=>t.includes('OUTLET')?'tipo-outlet':t.includes('REMAT')?'tipo-remat':'tipo-linea';
+const tipoShort=t=>t.includes('OUTLET')?'Outlet':t.includes('REMAT')?'Rematador':'Línea';
+
+function toast(msg,ms=2600){
+  const t=$('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),ms);
+}
+function closeModal(e){if(!e||e.target===$('modal'))$('modal').classList.remove('open');}
+
+// ── EXCEL READER ──────────────────────────────────────────────
+function findHdrRow(rows){
+  for(let i=0;i<rows.length;i++)
+    if(rows[i]&&rows[i].some(c=>norm(String(c||'')).includes('ESTABLECIMIENTO')))return i;
+  return -1;
+}
+
+// ── BACKEND PROTECTION ────────────────────────────────────────
+// La contraseña ya NO vive en el frontend. Se valida contra el backend
+// (variable de entorno PASSWORD en .env) y el Excel se descarga desde
+// el servidor, evitando el bloqueo CORS de Google Drive en el navegador.
+
+async function checkPassword(){
+  const input = prompt('🔒 Ingresa la contraseña para continuar:');
+  if(!input) return false;
+  try{
+    const resp = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: input})
+    });
+    if(!resp.ok){
+      alert('❌ Contraseña incorrecta.');
+      return false;
+    }
+    sessionStorage.setItem('mt_pass', input);
+    return true;
+  }catch(err){
+    alert('❌ No se pudo contactar el servidor. ¿Está corriendo el backend?');
+    return false;
+  }
+}
+
+async function fetchExcelFromBackend(sem = META.semana_actual){
+  const resp = await fetch(`/api/weeks/${sem}/excel`);
+  if(!resp.ok){
+    const err = await resp.json().catch(()=>({}));
+    throw new Error(err.error || `Error ${resp.status} descargando Excel`);
+  }
+  const blob = await resp.blob();
+  if(blob.size < 1000) throw new Error('El archivo descargado no parece un Excel válido');
+  return new File([blob], `cubo-semana-${sem}.xlsx`, {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+}
+
+async function uploadExcelToBackend(file, sem){
+  const fd = new FormData();
+  fd.append('file', file);
+  const password = sessionStorage.getItem('mt_pass') || '';
+  fd.append('password', password);
+  const resp = await fetch(`/api/weeks/${sem}/upload`, { method: 'POST', body: fd });
+  if(!resp.ok){
+    const err = await resp.json().catch(()=>({}));
+    throw new Error(err.error || `Error ${resp.status} subiendo Excel`);
+  }
+}
+
+// Carga automática al iniciar la página (sin contraseña)
+async function autoLoadFromDrive(sem = META.semana_actual){
+  try{
+    toast(`⬇️ Descargando Excel de la Semana ${sem}...`, 3500);
+    const file = await fetchExcelFromBackend(sem);
+    await processFile(file, sem, false);
+  }catch(err){
+    console.error('Week load error:', err);
+    const errEl=$('err'+sem); if(errEl) errEl.innerHTML=`<div class="err">❌ ${err.message}</div>`;
+    toast('Error al descargar el archivo del servidor.', 5000);
+  }
+}
+
+// Carga manual desde Drive (sí pide contraseña)
+async function manualLoadFromDrive(sem){
+  if(!await checkPassword())return;
+  await autoLoadFromDrive(sem);
+}
+
+// ── CATÁLOGO DE TIENDAS DESDE EXCEL ───────────────────────────
+// El backend lee el Excel (tiendas) y el JSON de grupos. Se combinan
+// para asignar grupo_id y grupo_nombre a cada tienda.
+async function loadCatalogFromBackend(){
+  const [groupsResp, storesResp] = await Promise.all([
+    fetch('/api/groups'),
+    fetch('/api/stores')
+  ]);
+  if(!groupsResp.ok) throw new Error('No se pudieron cargar los grupos');
+  if(!storesResp.ok) throw new Error('No se pudieron cargar las tiendas');
+
+  D.grupos = await groupsResp.json();
+  const stores = await storesResp.json();
+
+  const groupMap = {};
+  D.grupos.forEach(g => {
+    g.tiendas.forEach(nombre => {
+      groupMap[nombre.toUpperCase()] = {grupo_id: g.id, grupo_nombre: g.nombre};
+    });
+  });
+
+  D.tiendas = stores.map(s => {
+    const g = groupMap[s.nombre.toUpperCase()] || {grupo_id: -1, grupo_nombre: 'Sin grupo'};
+    return {
+      nombre: s.nombre,
+      tipo: s.tipo,
+      zona: s.zona,
+      grupo_id: g.grupo_id,
+      grupo_nombre: g.grupo_nombre
+    };
+  });
+
+  // Sincronizar contadores con el catálogo real cargado desde el Excel
+  META.total_tiendas = D.tiendas.length;
+  META.total_grupos = D.grupos.length;
+}
+
+function parseExcelFull(input){
+  return new Promise((res,rej)=>{
+    const processBuffer=buf=>{
+      try{
+        const wb=XLSX.read(buf,{type:'array'});
+        // Intentar primera hoja con datos (buscar hoja con Establecimiento)
+        let ws=null;
+        for(const sn of wb.SheetNames){
+          const s=wb.Sheets[sn];
+          const tmp=XLSX.utils.sheet_to_json(s,{header:1,defval:null,raw:true});
+          if(findHdrRow(tmp)>=0){ws=s;break;}
+        }
+        if(!ws){rej('No se encontró la columna Establecimiento en ninguna hoja');return;}
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+        const hi=findHdrRow(rows);
+        if(hi<0){rej('No se encontró la columna Establecimiento');return;}
+        const hdrs=rows[hi];
+        const colEst=hdrs.findIndex(h=>norm(String(h||'')).includes('ESTABLECIMIENTO'));
+        if(colEst<0){rej('Columna Establecimiento no encontrada');return;}
+
+        // Construir array de métricas con carry-forward (para encabezados de 2 filas con celdas fusionadas)
+        // Buscar la última fila no vacía antes de hi (es la fila de métricas)
+        let metRow=[];
+        for(let r=hi-1;r>=Math.max(0,hi-5);r--){
+          if(rows[r]&&rows[r].some(c=>c!=null&&String(c).trim()!=='')){
+            metRow=rows[r]; break;
+          }
+        }
+        // Carry-forward: si la celda de métrica está vacía, usar la anterior
+        const metNorm=[];let lastM='';
+        for(let i=0;i<Math.max(hdrs.length,metRow.length);i++){
+          const v=metRow[i]!=null?norm(String(metRow[i])):'';
+          if(v)lastM=v;
+          metNorm[i]=lastM;
+        }
+
+        // Buscar columna: primero por (métrica en fila superior + año en fila header)
+        // Luego fallback a búsqueda en una sola fila (por si el Excel cambia estructura)
+        function findColM(keyword,altKeywords){
+          const kws=[keyword,...(altKeywords||[])].map(k=>norm(k));
+          // Modo 2 filas: métrica + año
+          for(let i=0;i<hdrs.length;i++){
+            const m=metNorm[i]||'';
+            const yr=norm(String(hdrs[i]||''));
+            const metMatch=kws.some(k=>m.includes(k));
+            const yr2026=yr.includes('2026')&&!yr.includes('2025');
+            if(metMatch&&yr2026)return i;
+          }
+          // Fallback modo 1 fila: todo en la misma celda
+          for(let i=0;i<hdrs.length;i++){
+            const s=norm(String(hdrs[i]||''));
+            if(kws.some(k=>s.includes(k))&&s.includes('2026')&&!s.includes('2025'))return i;
+          }
+          return -1;
+        }
+
+        const colV  =findColM('VENTA',['VENTA AL DIA']);
+        const colP  =findColM('PRESUPUESTO');
+        const colU  =findColM('ARTICULOS',['ARTICULOS POR TICKET','ART POR TICKET']);
+        const colC  =findColM('TASA',['TASA DE CONVERSION','CONVERSION']);
+        const colTK =findColM('VALOR TICKET',['TICKET PROMEDIO','PROMEDIO']);
+
+        if(colV<0||colP<0){
+          const found=[];
+          if(colV>=0)found.push(`Venta=col${colV}`);
+          if(colP>=0)found.push(`Ppto=col${colP}`);
+          if(colU>=0)found.push(`UPT=col${colU}`);
+          if(colC>=0)found.push(`Conv=col${colC}`);
+          const missing=[];
+          if(colV<0)missing.push('venta al día');
+          if(colP<0)missing.push('presupuesto');
+          rej(`Columnas 2026 no encontradas: ${missing.join(', ')}. `
+            +`Encontradas: ${found.length?found.join(', '):'ninguna'}. `
+            +'Asegúrate de usar el archivo Cubo de todos los canales con mes 2026.');
+          return;
+        }
+
+        const SKIP=['TOTAL','CANAL TIENDAS','ALMACEN DE ','ALMACEN OUTLET','ALMACEN REMATADOR',
+                    'ALMACEN LINEA','ALMACÉN DE','ALMACÉN OUTLET','ALMACÉN REMATADOR',
+                    'ALMACÉN LINEA','ALMACÉN DE LÍNEA','ALMACEN DE LINEA'];
+        const result={};
+        for(let i=hi+1;i<rows.length;i++){
+          const row=rows[i];if(!row)continue;
+          const nombre=String(row[colEst]||'').trim();
+          if(!nombre)continue;
+          const nn=norm(nombre);
+          if(SKIP.some(s=>nn.startsWith(norm(s)))||nn==='')continue;
+          const vt=parseFloat(row[colV])||0;
+          const pp=parseFloat(row[colP])||0;
+          const cumpl=(vt>0&&pp>0)?vt/pp:null;
+          const upt  =colU>=0?(parseFloat(row[colU])||null):null;
+          const conv =colC>=0?(parseFloat(row[colC])||null):null;
+          const ticket=colTK>=0?(parseFloat(row[colTK])||null):null;
+          result[nombre]={cumpl,upt,conv,venta:vt,presupuesto:pp,ticket};
+        }
+        if(Object.keys(result).length===0){
+          rej('No se encontraron tiendas en el archivo. Verifica que el Excel no esté filtrado o vacío.');
+          return;
+        }
+        res(result);
+      }catch(err){rej('Error leyendo archivo: '+err.message);}
+    };
+    if(input instanceof ArrayBuffer){
+      processBuffer(input);
+    }else{
+      const reader=new FileReader();
+      reader.onload=e=>processBuffer(e.target.result);
+      reader.onerror=()=>rej('Error al leer el archivo');
+      reader.readAsArrayBuffer(input);
+    }
+  });
+}
+
+// ── MATCH STORE NAME ─────────────────────────────────────────
+// Intenta coincidir nombre de tienda del dashboard con nombre en el Excel
+// (exacto → normalizado → parcial)
+function matchStore(nombre, data){
+  if(!data) return null;
+  // Exacto
+  if(data[nombre]!=null) return data[nombre];
+  const nn=norm(nombre);
+  // Normalizado exacto
+  for(const k of Object.keys(data)) if(norm(k)===nn) return data[k];
+  // Normalizado parcial (uno contiene al otro)
+  const keys=Object.keys(data);
+  for(const k of keys){const kn=norm(k);if(nn.includes(kn)||kn.includes(nn))return data[k];}
+  return null;
+}
+
+// ── POINTS ENGINE ─────────────────────────────────────────────
+// Retorna {storeName:{pts,pts_cumpl,pts_upt,pts_conv,eligible,cumpl,upt,conv}}
+function calcGroupPts(grupo, semData){
+  const result={};
+  grupo.tiendas.forEach(n=>{
+    const d=semData?matchStore(n,semData):null;
+    const cumpl=d?d.cumpl:null;
+    const eligible=cumpl!=null&&cumpl>=COND;
+    result[n]={pts:0,pts_cumpl:0,pts_upt:0,pts_conv:0,eligible,
+               cumpl,upt:d?d.upt:null,conv:d?d.conv:null,
+               venta:d?d.venta:null,presupuesto:d?d.presupuesto:null};
+  });
+  if(!semData) return result;
+
+  const elig=Object.entries(result).filter(([,v])=>v.eligible).map(([n,v])=>({n,...v}));
+  const all =Object.entries(result).map(([n,v])=>({n,...v}));
+  const EPS=1e-8;
+
+  // ── Cumplimiento: mejor % entre las elegibles (todas ya son >= 100%)
+  if(elig.length>0){
+    const maxC=Math.max(...elig.map(e=>e.cumpl));
+    elig.filter(e=>e.cumpl>=maxC-EPS).forEach(e=>{result[e.n].pts+=3;result[e.n].pts_cumpl=3;});
+  }
+
+  // ── UPT: el MEJOR del grupo COMPLETO (incluye no-elegibles)
+  // Puntos solo si esa tienda con mejor UPT también cumple >= 100%
+  // Si el mejor UPT no cumple → NADIE gana esos puntos
+  const aupt=all.filter(e=>e.upt!=null&&e.upt>0);
+  if(aupt.length){
+    const mxU=Math.max(...aupt.map(e=>e.upt));
+    // Marcar quién tiene el mejor UPT del grupo (para mostrar en UI)
+    aupt.filter(e=>e.upt>=mxU-EPS).forEach(e=>{result[e.n].best_upt_grupo=true;});
+    // Otorgar puntos solo si ese mejor UPT es además elegible
+    aupt.filter(e=>e.upt>=mxU-EPS&&result[e.n].eligible)
+        .forEach(e=>{result[e.n].pts+=3;result[e.n].pts_upt=3;});
+  }
+
+  // ── Conversión: el MEJOR del grupo COMPLETO (incluye no-elegibles)
+  // Puntos solo si esa tienda con mejor Conv también cumple >= 100%
+  const aconv=all.filter(e=>e.conv!=null&&e.conv>0);
+  if(aconv.length){
+    const mxV=Math.max(...aconv.map(e=>e.conv));
+    // Marcar quién tiene la mejor Conv del grupo (para mostrar en UI)
+    aconv.filter(e=>e.conv>=mxV-EPS).forEach(e=>{result[e.n].best_conv_grupo=true;});
+    // Otorgar puntos solo si esa mejor Conv es además elegible
+    aconv.filter(e=>e.conv>=mxV-EPS&&result[e.n].eligible)
+         .forEach(e=>{result[e.n].pts+=3;result[e.n].pts_conv=3;});
+  }
+
+  return result;
+}
+
+// ── CUMULATIVE TABLE ──────────────────────────────────────────
+function buildCumTable(){
+  const T={};
+  D.tiendas.forEach(t=>{
+    T[t.nombre]={nombre:t.nombre,tipo:t.tipo,zona:t.zona,
+      grupo_id:t.grupo_id,grupo_nombre:t.grupo_nombre,
+      pts_total:0,pts_s1:0,pts_s2:0,pts_s3:0,pts_s4:0};
+  });
+  for(let s=1;s<=4;s++){
+    const sd=weekData[s];
+    if(!sd) continue;
+    D.grupos.forEach(g=>{
+      const gp=calcGroupPts(g,sd);
+      g.tiendas.forEach(n=>{
+        if(!T[n]) return;
+        const v=gp[n]||{pts:0};
+        T[n]['pts_s'+s]+=v.pts;
+        T[n].pts_total+=v.pts;
+      });
+    });
+  }
+  return Object.values(T).sort((a,b)=>b.pts_total-a.pts_total);
+}
+
+// ── GROUP WEEKLY WINNERS (for prize display) ──────────────────
+function getGroupWinners(sem){
+  const sd=weekData[sem];if(!sd)return{};
+  const winners={};
+  D.grupos.forEach(g=>{
+    const gp=calcGroupPts(g,sd);
+    const rows=Object.entries(gp).map(([n,v])=>({n,...v}))
+      .filter(r=>r.pts>0).sort((a,b)=>b.pts-a.pts);
+    if(rows.length){
+      const maxPts=rows[0].pts;
+      winners[g.id]=rows.filter(r=>r.pts===maxPts).map(r=>r.n);
+    }
+  });
+  return winners;
+}
+
+// ═══ PAGE: INICIO ════════════════════════════════════════════
+function rInicio(){
+  const el=$('page-inicio');
+  const ct=buildCumTable();
+  const semsOK=[1,2,3,4].filter(s=>weekData[s]&&Object.keys(weekData[s]).length>0);
+  // Hero balones
+  let html = ballRow(
+    ['ball-sm','ball-md','ball-lg','ball-xl','ball-lg','ball-md','ball-sm'],
+    [0,-0.8,-1.6,-2.4,-3.2,-4,-4.8]
+  );
+  html +=`<div class="kgrid">
+    <div class="kpi"><div class="ki">🏪</div><div class="kv" data-n="${META.total_tiendas}">0</div><div class="kl">Tiendas</div></div>
+    <div class="kpi"><div class="ki">⚽</div><div class="kv" data-n="${META.total_grupos}">0</div><div class="kl">Grupos</div></div>
+    <div class="kpi"><div class="ki">✅</div><div class="kv" data-n="${semsOK.length}">0</div><div class="kl">Semanas con datos</div></div>
+    <div class="kpi"><div class="ki">🏆</div><div class="kv">${ct[0]?ct[0].pts_total:0}</div><div class="kl">Máx puntos</div></div>
+    <div class="kpi"><div class="ki">📋</div><div class="kv">${META.condicion_min_cumpl*100|0}%</div><div class="kl">Cumpl. mínimo</div></div>
+    <div class="kpi"><div class="ki">💰</div><div class="kv">9</div><div class="kl">Max pts/semana</div></div>
+  </div>
+  <!-- STATUS SEMANAS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px;margin-bottom:22px">`;
+  [1,2,3,4].forEach(s=>{
+    const cfg=SCFG[s];const hasD=weekData[s]&&Object.keys(weekData[s]).length>0;
+    const isCur=s===META.semana_actual;
+    const st=hasD?'✅ Datos cargados':isCur?'🔴 Activa':'⏳ Pendiente';
+    const sc=hasD?'std':isCur?'sta':'stp';
+    html+=`<div class="card" style="border-left:3px solid ${cfg.col};cursor:pointer" onclick="goTo('s${s}')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <span style="font-size:1.3rem">📅</span>
+        <div><div style="font-family:'Bebas Neue';font-size:.95rem;letter-spacing:1px">SEMANA ${s}</div>
+          <div style="font-size:.68rem;color:rgba(255,255,255,.45)">${cfg.dias}</div></div>
+        <span class="wstatus ${sc}" style="margin-left:auto">${st}</span>
+      </div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.55)">3 indicadores · Condición: cumplimiento ≥ 100%</div>
+      ${hasD?`<div style="font-size:.7rem;margin-top:6px;color:var(--or2)">Ganadores: ${getTopNGrupos(s,1)}</div>`:''}
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // REGLAS
+  html+=`<div class="card" style="margin-bottom:20px;border-color:rgba(201,168,76,.3)">
+  <div class="st" style="font-size:1rem">📋 Reglas del Concurso</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:.78rem">
+    <div style="background:rgba(26,122,60,.15);border-radius:8px;padding:10px">
+      <b style="color:#7effa0">📈 Cumplimiento:</b><br>3 pts al mejor % venta/presupuesto del grupo
+    </div>
+    <div style="background:rgba(41,128,185,.15);border-radius:8px;padding:10px">
+      <b style="color:#7ec8ff">👟 UPT:</b><br>3 pts al mayor artículo por ticket del grupo
+    </div>
+    <div style="background:rgba(106,26,122,.15);border-radius:8px;padding:10px">
+      <b style="color:#e0b0ff">🎯 Conversión:</b><br>3 pts a la mayor tasa de conversión del grupo
+    </div>
+    <div style="background:rgba(192,57,43,.15);border-radius:8px;padding:10px">
+      <b style="color:#ff9999">⚠️ Condición mínima:</b><br>Cumplimiento ≥ 100% para ganar puntos en CUALQUIER categoría
+    </div>
+  </div>
+  </div>`;
+
+  // ── DESCRIPCION COMPLETA DEL CONCURSO ──────────────────────
+  html += ballSep('REGLAMENTO OFICIAL');
+  html += concursoDescripcion();
+
+  // TOP 10
+  if(ct[0]&&ct[0].pts_total>0){
+    html += ballSep('TOP 10');
+    html+=`<div class="card card-ball" style="margin-bottom:22px">
+    <div class="st">🏆 Top 10 — Ranking Acumulado</div>
+    <div class="tw"><table><thead><tr>
+      <th>#</th><th>Tienda</th><th>Tipo</th><th>Zona</th>
+      <th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>Total</th>
+    </tr></thead><tbody>`;
+    ct.slice(0,10).forEach((r,i)=>{
+      html+=`<tr class="${i<3?'p'+(i+1):''}">
+        <td>${medal(i+1)}</td>
+        <td><strong>${r.nombre}</strong></td>
+        <td><span class="badge ${tipoClass(r.tipo)}">${tipoShort(r.tipo)}</span></td>
+        <td><small style="color:rgba(255,255,255,.5)">${r.zona}</small></td>
+        <td>${r.pts_s1}</td><td>${r.pts_s2}</td><td>${r.pts_s3}</td><td>${r.pts_s4}</td>
+        <td class="pts">${r.pts_total}</td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div></div>`;
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('[data-n]').forEach(e=>{
+    const t=parseInt(e.dataset.n);let c=0;const s=Math.ceil(t/20);
+    const tm=setInterval(()=>{c=Math.min(c+s,t);e.textContent=c;if(c>=t)clearInterval(tm);},30);
+  });
+}
+
+// ═══ DESCRIPCION COMPLETA DEL CONCURSO ═══════════════════════
+function concursoDescripcion(){
+  return `<div id="rules-wrap">
+  <!-- ════ DESCRIPCION COMPLETA ════ -->
+  <div style="margin-bottom:8px">
+    <div style="font-family:'Bebas Neue';font-size:1.6rem;color:var(--or2);letter-spacing:3px;
+      text-align:center;padding:18px 0 6px;text-shadow:0 2px 12px rgba(201,168,76,.4)">
+      ⚽ COPA MUNDIAL TENNIS 2026 — GUÍA OFICIAL PARA LA FUERZA DE VENTAS ⚽
+    </div>
+    <div style="text-align:center;font-size:.78rem;color:rgba(255,255,255,.45);
+      letter-spacing:2px;margin-bottom:20px">JUNIO 2026 · BASES Y CONDICIONES DEL CONCURSO</div>
+  </div>
+
+  <!-- 1. QUÉ ES -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--or2)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:var(--or2);letter-spacing:1.5px;margin-bottom:10px">
+      🏆 1. ¿QUÉ ES EL CONCURSO?
+    </div>
+    <div style="font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.85)">
+      El <b style="color:var(--or2)">Copa Mundial Tennis 2026</b> es una competencia comercial interna
+      que se desarrolla durante el mes de <b>junio de 2026</b>, inspirada en la Copa Mundial de Fútbol.
+      Las tiendas compiten entre sí dentro de su grupo semana a semana, acumulando puntos
+      por desempeño en tres indicadores clave del negocio.
+      <br><br>
+      El objetivo es <b style="color:#7effa0">motivar, reconocer y premiar</b> a los equipos de tienda
+      que logren los mejores resultados en ventas, calidad de venta (UPT) y eficiencia (conversión),
+      fomentando la competitividad sana dentro de cada categoría de negocio.
+    </div>
+  </div>
+
+  <!-- 2. QUIÉNES PARTICIPAN -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--vd2)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:var(--vd2);letter-spacing:1.5px;margin-bottom:10px">
+      🏪 2. ¿QUIÉNES PARTICIPAN?
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:.8rem">
+      <div style="background:rgba(26,122,60,.18);border-radius:10px;padding:12px">
+        <div style="font-weight:700;color:#7effa0;margin-bottom:6px">✅ ALMACÉN DE LÍNEA</div>
+        <div style="color:rgba(255,255,255,.8);line-height:1.6">
+          <b>69 tiendas</b> agrupadas en <b>12 grupos</b> de 5 a 6 tiendas cada uno.<br>
+          Compiten exclusivamente entre tiendas de línea.<br>
+          Acceden a todos los premios: Campeón, Subcampeón, 3er Puesto y premio de grupo.
+        </div>
+      </div>
+      <div style="background:rgba(41,128,185,.18);border-radius:10px;padding:12px">
+        <div style="font-weight:700;color:#7ec8ff;margin-bottom:6px">✅ ALMACÉN OUTLET</div>
+        <div style="color:rgba(255,255,255,.8);line-height:1.6">
+          <b>22 tiendas</b> agrupadas en <b>4 grupos</b> de 5 a 6 tiendas.<br>
+          Compiten exclusivamente entre tiendas outlet.<br>
+          Acceden a todos los premios: Campeón, Subcampeón, 3er Puesto y premio de grupo.
+        </div>
+      </div>
+      <div style="background:rgba(192,57,43,.18);border-radius:10px;padding:12px">
+        <div style="font-weight:700;color:#ff9999;margin-bottom:6px">⚠️ ALMACÉN REMATADOR</div>
+        <div style="color:rgba(255,255,255,.8);line-height:1.6">
+          <b>3 tiendas</b> en <b>1 grupo</b>: BIMA, ROSELLÓN y EVENTOS TENNIS CARNAVAL.<br>
+          Compiten entre sí y acumulan puntos normalmente.<br>
+          <b style="color:#ff9999">Solo acceden al premio de mejor del grupo ($400.000).</b><br>
+          No participan en Campeón, Subcampeón ni 3er Puesto.
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.05);border-radius:8px;font-size:.76rem;color:rgba(255,255,255,.55)">
+      ❌ <b>Excluidos del concurso:</b> Franquicias (ya retiradas del archivo), EVENTOS TENNIS Antioquia y TOP MARK ÚNICO CALI.
+    </div>
+  </div>
+
+  <!-- 3. FORMACIÓN DE GRUPOS -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--bl)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:#7ec8ff;letter-spacing:1.5px;margin-bottom:10px">
+      ⚽ 3. ¿CÓMO SE FORMARON LOS GRUPOS?
+    </div>
+    <div style="font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.85);margin-bottom:10px">
+      Los grupos se formaron buscando que tiendas con <b style="color:#7ec8ff">nivel de UPT similar</b>
+      compitan entre sí. Se ordenaron todas las tiendas de cada tipo de mayor a menor UPT
+      y se asignaron secuencialmente:
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.78rem">
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="color:var(--or2);font-weight:700;margin-bottom:4px">Grupo A (Línea/Outlet)</div>
+        <div style="color:rgba(255,255,255,.7)">Las 5-6 tiendas con <b>mayor UPT</b> de su tipo.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="color:var(--or2);font-weight:700;margin-bottom:4px">Grupo B</div>
+        <div style="color:rgba(255,255,255,.7)">Las siguientes 5-6 tiendas en UPT.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="color:var(--or2);font-weight:700;margin-bottom:4px">Grupo C … L</div>
+        <div style="color:rgba(255,255,255,.7)">Sucesivamente hasta completar los 12 grupos de Línea y 4 de Outlet.</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:.76rem;color:rgba(255,255,255,.5);line-height:1.5">
+      🔒 Los grupos son <b>fijos</b> para todo el mes. No cambian semana a semana.
+      Cada tienda compite siempre contra las mismas tiendas de su grupo.
+    </div>
+  </div>
+
+  <!-- 5. SISTEMA DE PUNTOS -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--or2)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:var(--or2);letter-spacing:1.5px;margin-bottom:12px">
+      🎯 5. SISTEMA DE PUNTOS — ¿CÓMO SE GANA?
+    </div>
+
+    <!-- Condición GATE -->
+    <div style="background:rgba(192,57,43,.25);border:1.5px solid var(--rd);border-radius:10px;
+      padding:13px 16px;margin-bottom:14px">
+      <div style="font-weight:700;font-size:.88rem;color:#ff9999;margin-bottom:6px">
+        🔐 CONDICIÓN DE ENTRADA — SIN ESTA CONDICIÓN NO HAY PUNTOS
+      </div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.88);line-height:1.6">
+        Para que una tienda pueda ganar puntos en <u>cualquiera</u> de las tres categorías,
+        su <b style="color:#ff9999">cumplimiento de ventas vs presupuesto debe ser igual o superior al 100%</b>.
+        <br>
+        Si el cumplimiento es 99,9% o menos → <b style="color:#ff9999">0 puntos en todas las categorías esa semana</b>,
+        aunque tenga el mejor UPT o la mejor conversión del grupo.
+      </div>
+    </div>
+
+    <!-- 3 categorías -->
+    <div style="font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:10px">
+      Cumpliendo la condición anterior, dentro de cada grupo compiten en 3 categorías simultáneas cada semana:
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:14px">
+      <div style="background:rgba(26,122,60,.2);border-radius:10px;padding:12px">
+        <div style="font-size:1.1rem;margin-bottom:4px">📈</div>
+        <div style="font-weight:700;color:#7effa0;font-size:.85rem;margin-bottom:4px">CUMPLIMIENTO DE VENTAS</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.8);line-height:1.5">
+          <b>¿Qué mide?</b> Venta real ÷ Presupuesto × 100<br>
+          <b>¿Quién gana?</b> La tienda con el mayor porcentaje de cumplimiento dentro del grupo.<br>
+          <b>Premio:</b> <span style="color:var(--or2);font-weight:700">3 puntos</span>
+        </div>
+      </div>
+      <div style="background:rgba(41,128,185,.2);border-radius:10px;padding:12px">
+        <div style="font-size:1.1rem;margin-bottom:4px">👟</div>
+        <div style="font-weight:700;color:#7ec8ff;font-size:.85rem;margin-bottom:4px">UPT — ARTÍCULOS POR TICKET</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.8);line-height:1.5">
+          <b>¿Qué mide?</b> Promedio de artículos por transacción.<br>
+          <b>¿Quién gana?</b> La tienda con el mayor UPT elegible dentro del grupo.<br>
+          <b>Premio:</b> <span style="color:var(--or2);font-weight:700">3 puntos</span>
+        </div>
+      </div>
+      <div style="background:rgba(106,26,122,.2);border-radius:10px;padding:12px">
+        <div style="font-size:1.1rem;margin-bottom:4px">🎯</div>
+        <div style="font-weight:700;color:#e0b0ff;font-size:.85rem;margin-bottom:4px">TASA DE CONVERSIÓN</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.8);line-height:1.5">
+          <b>¿Qué mide?</b> Transacciones ÷ Ingresos de tráfico × 100<br>
+          <b>¿Quién gana?</b> La tienda con la mayor tasa de conversión elegible.<br>
+          <b>Premio:</b> <span style="color:var(--or2);font-weight:700">3 puntos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Puntos acumulables -->
+    <div style="background:rgba(201,168,76,.15);border-radius:10px;padding:12px;margin-bottom:12px;font-size:.82rem;line-height:1.6">
+      <b style="color:var(--or2)">⭐ UNA TIENDA PUEDE GANAR MÚLTIPLES CATEGORÍAS EN LA MISMA SEMANA:</b><br>
+      • Si gana Cumplimiento + UPT → <b>6 puntos</b> esa semana.<br>
+      • Si gana las 3 categorías → <b>9 puntos</b> esa semana (máximo posible).<br>
+      • Los puntos se <b>suman</b>, no se escogen.
+    </div>
+
+    <!-- Tabla de puntos posibles -->
+    <div style="font-size:.8rem;margin-bottom:8px;color:rgba(255,255,255,.65)">
+      <b>Resumen de puntos por semana y total del torneo:</b>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;font-size:.78rem;text-align:center">
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--or2)">3</div>
+        <div style="color:rgba(255,255,255,.6)">Pts si gana<br>1 categoría</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--or2)">6</div>
+        <div style="color:rgba(255,255,255,.6)">Pts si gana<br>2 categorías</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--or2)">9</div>
+        <div style="color:rgba(255,255,255,.6)">Pts máx<br>por semana</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--or2)">36</div>
+        <div style="color:rgba(255,255,255,.6)">Pts máx<br>en el torneo</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px">
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--rd)">0</div>
+        <div style="color:rgba(255,255,255,.6)">Pts si cumpl<br>está bajo 100%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. EJEMPLO PRÁCTICO -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid #7effa0">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:#7effa0;letter-spacing:1.5px;margin-bottom:12px">
+      📖 6. EJEMPLO PRÁCTICO — ¿CÓMO SE VE EN UN GRUPO?
+    </div>
+    <div style="font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:10px">
+      Supongamos el Grupo Línea A en la Semana 1 con 5 tiendas:
+    </div>
+    <div style="overflow-x:auto">
+    <table style="font-size:.76rem;min-width:500px">
+      <thead><tr>
+        <th>Tienda</th><th>Cumpl%</th><th>UPT</th><th>Conv%</th>
+        <th style="color:#ff9999">Elegible</th>
+        <th style="color:#7effa0">Pts Cumpl</th>
+        <th style="color:#7ec8ff">Pts UPT</th>
+        <th style="color:#e0b0ff">Pts Conv</th>
+        <th style="color:var(--or2)">TOTAL</th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:rgba(201,168,76,.15)">
+          <td><b>TIENDA A</b></td><td style="color:#7effa0">107%</td><td>2.35</td><td>22%</td>
+          <td style="color:#7effa0">✅ Sí</td>
+          <td style="color:#7effa0"><b>3</b> 🏆</td>
+          <td style="color:#7ec8ff"><b>3</b> 🏆</td>
+          <td>0</td>
+          <td class="pts">6</td>
+        </tr>
+        <tr>
+          <td>TIENDA B</td><td style="color:#7effa0">102%</td><td>2.20</td><td>27%</td>
+          <td style="color:#7effa0">✅ Sí</td><td>0</td><td>0</td>
+          <td style="color:#e0b0ff"><b>3</b> 🏆</td>
+          <td class="pts">3</td>
+        </tr>
+        <tr>
+          <td>TIENDA C</td><td style="color:#7effa0">100%</td><td>2.15</td><td>20%</td>
+          <td style="color:#7effa0">✅ Sí</td><td>0</td><td>0</td><td>0</td>
+          <td class="pts">0</td>
+        </tr>
+        <tr style="opacity:.55">
+          <td>TIENDA D</td><td style="color:#ff9999">98%</td><td>2.40</td><td>30%</td>
+          <td style="color:#ff9999">❌ No</td>
+          <td style="color:#ff9999">0</td><td style="color:#ff9999">0</td><td style="color:#ff9999">0</td>
+          <td class="pts" style="color:rgba(255,255,255,.3)">0</td>
+        </tr>
+        <tr style="opacity:.55">
+          <td>TIENDA E</td><td style="color:#ff9999">95%</td><td>2.50</td><td>35%</td>
+          <td style="color:#ff9999">❌ No</td>
+          <td style="color:#ff9999">0</td><td style="color:#ff9999">0</td><td style="color:#ff9999">0</td>
+          <td class="pts" style="color:rgba(255,255,255,.3)">0</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:10px;font-size:.76rem;color:rgba(255,255,255,.6);line-height:1.6">
+      <b style="color:#ff9999">Nota clave:</b> TIENDA D tiene el mejor UPT (2.50) y TIENDA E tiene la mejor conversión (35%),
+      pero ambas <b>quedan en 0 puntos</b> porque no cumplen el 100% de presupuesto.
+      Este es el condicionante más importante del concurso.
+    </div>
+  </div>
+
+  <!-- 7. EMPATES -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--or)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:var(--or2);letter-spacing:1.5px;margin-bottom:10px">
+      🤝 7. ¿QUÉ PASA SI HAY EMPATE?
+    </div>
+    <div style="font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.85)">
+      Si dos o más tiendas <b>elegibles</b> tienen exactamente el mismo valor en un indicador:
+      <b style="color:var(--or2)">ambas reciben los 3 puntos</b>. No hay desempate.
+      Los puntos <u>no se dividen</u>: cada tienda empatada recibe el premio completo.
+    </div>
+  </div>
+
+  <!-- 8. PREMIOS -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--or2)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:var(--or2);letter-spacing:1.5px;margin-bottom:12px">
+      🏆 8. PREMIOS — ¿QUÉ SE PUEDE GANAR?
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;font-size:.8rem">
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(201,168,76,.05));
+        border:1px solid var(--or);border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">🏆</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:var(--or2);letter-spacing:1px">COPA MUNDIAL DE VENTAS</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Reconocimiento a la tienda campeona (Línea u Outlet) con <b>más puntos acumulados</b> en las 4 semanas.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(180,180,180,.2),rgba(180,180,180,.04));
+        border:1px solid #a0a0a0;border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">🥈</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#c8c8c8;letter-spacing:1px">COPA DE PLATA COMERCIAL</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Reconocimiento a la tienda que alcance la gran final y obtenga el <b>segundo lugar</b>.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(200,120,50,.2),rgba(200,120,50,.04));
+        border:1px solid #c87533;border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">🥉</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#e8a060;letter-spacing:1px">BRONCE DE LA GLORIA</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Reconocimiento a la tienda que ocupe el <b>tercer puesto</b> del campeonato.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(41,128,185,.2),rgba(41,128,185,.04));
+        border:1px solid #7ec8ff;border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">⚽</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#7ec8ff;letter-spacing:1px">BOTA DE ORO UPT</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Premio a la tienda con el <b>mejor UPT</b> durante el torneo. Solo elegibles (cumpl ≥ 100%).
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(106,26,122,.2),rgba(106,26,122,.04));
+        border:1px solid #e0b0ff;border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">🎯</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#e0b0ff;letter-spacing:1px">BOTÍN DE ORO DE CONVERSIÓN</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Premio a la tienda con la <b>mejor tasa de conversión</b> acumulada. Solo elegibles.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(192,57,43,.2),rgba(192,57,43,.04));
+        border:1px solid #ff9999;border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">💰</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#ffcc99;letter-spacing:1px">PREMIO PUSKÁS COMERCIAL</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          Reconocimiento a la tienda con el <b>mayor ticket promedio</b> (valor por transacción) durante el Mundial.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(26,122,60,.2),rgba(26,122,60,.04));
+        border:1px solid var(--vd2);border-radius:10px;padding:14px">
+        <div style="font-size:1.5rem;margin-bottom:4px">🏅</div>
+        <div style="font-family:'Bebas Neue';font-size:1rem;color:#7effa0;letter-spacing:1px">PREMIO MEJOR DEL GRUPO</div>
+        <div style="color:rgba(255,255,255,.75);line-height:1.5;margin-top:4px">
+          La tienda con <b>más puntos en su grupo</b> al cierre del mes.
+          Aplica Línea, Outlet <b>y Rematadores</b>. Premio para todo el equipo.
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(192,57,43,.12);
+      border-radius:8px;font-size:.76rem;color:rgba(255,255,255,.65);line-height:1.5">
+      ⚠️ <b style="color:#ff9999">Rematadores (BIMA, ROSELLÓN, CARNAVAL):</b>
+      Solo pueden ganar el Premio Mejor del Grupo. No participan en Copa Mundial, Copa de Plata ni Bronce,
+      independientemente de los puntos acumulados.
+    </div>
+  </div>
+
+  <!-- 9. RESTRICCIONES Y CONDICIONANTES -->
+  <div class="card" style="margin-bottom:14px;border-left:4px solid var(--rd)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:#ff9999;letter-spacing:1.5px;margin-bottom:12px">
+      🚫 9. RESTRICCIONES Y CONDICIONANTES — LEE CON ATENCIÓN
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:.8rem">
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(192,57,43,.15);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">🔐</span>
+        <div><b style="color:#ff9999">Condición de entrada es absoluta:</b>
+        Cumplimiento de ventas vs presupuesto &lt; 100% = <b>0 puntos</b> en toda la semana,
+        sin importar qué tan bueno sea el UPT o la conversión de la tienda.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">📊</span>
+        <div><b style="color:var(--or2)">El presupuesto es el oficial de la compañía:</b>
+        No se acepta ningún ajuste manual del presupuesto. El dato proviene directamente del cubo
+        <i>cubo todos los canales 3.xlsx</i> actualizado cada semana.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">🔒</span>
+        <div><b style="color:var(--or2)">Las semanas cerradas no se modifican:</b>
+        Una vez cargados y guardados los datos de una semana, esos resultados son definitivos.
+        No se pueden cambiar los puntos de semanas anteriores.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">👥</span>
+        <div><b style="color:var(--or2)">Los grupos son fijos:</b>
+        Las tiendas están asignadas a sus grupos por nivel de UPT desde el inicio del torneo.
+        No hay reasignación de grupos durante el mes.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">🏷️</span>
+        <div><b style="color:var(--or2)">Sin mezcla de tipologías:</b>
+        Las tiendas Línea compiten solo contra Línea. Las Outlet solo contra Outlet.
+        Los Rematadores solo contra Rematadores. No existe competencia cruzada entre tipos.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">📅</span>
+        <div><b style="color:var(--or2)">Datos del mes de junio únicamente:</b>
+        Los indicadores del concurso corresponden al mes de junio 2026.
+        Las ventas de mayo 2025 y mayo 2026 que aparecen en el cubo son solo referencia histórica.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">🎯</span>
+        <div><b style="color:var(--or2)">La conversión no aplica para todas las tiendas:</b>
+        Las tiendas que no tienen medición de conversión (dato en 0 o N/A) no compiten en esa categoría.
+        Los puntos de conversión solo se otorgan entre las tiendas elegibles que sí tienen el dato.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(192,57,43,.12);border-radius:8px">
+        <span style="font-size:1.1rem;flex-shrink:0">🚫</span>
+        <div><b style="color:#ff9999">Tiendas excluidas del concurso (no participan):</b>
+        Franquicias Tennis, EVENTOS TENNIS (Antioquia) y TOP MARK ÚNICO CALI.
+        Estas tiendas no aparecen en ningún grupo ni pueden ganar ningún premio.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. ACTUALIZACIÓN SEMANAL -->
+  <div class="card" style="margin-bottom:22px;border-left:4px solid var(--vd2)">
+    <div style="font-family:'Bebas Neue';font-size:1.15rem;color:#7effa0;letter-spacing:1.5px;margin-bottom:12px">
+      🔄 10. ¿CÓMO SE ACTUALIZA EL CONCURSO CADA SEMANA?
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:.8rem">
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--or2);min-width:24px">1.</span>
+        <div>Al cierre de cada semana, el equipo de Business Intelligence exporta el archivo
+        <b style="color:var(--or2)">cubo todos los canales 3.xlsx</b> con los datos acumulados de junio actualizados.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--or2);min-width:24px">2.</span>
+        <div>Se ingresa al dashboard en la <b>pestaña correspondiente</b> a esa semana (Semana 1, 2, 3 o 4)
+        y se sube el archivo Excel haciendo clic en el área de carga.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--or2);min-width:24px">3.</span>
+        <div>El sistema extrae automáticamente los tres indicadores (venta, presupuesto, UPT, conversión)
+        y <b>calcula los puntos de cada grupo</b> en segundos.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--or2);min-width:24px">4.</span>
+        <div>Los datos quedan <b style="color:#7effa0">guardados automáticamente en el navegador</b>.
+        Al cargar la semana siguiente, los resultados de la semana anterior permanecen intactos.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;
+        background:rgba(255,255,255,.05);border-radius:8px">
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--or2);min-width:24px">5.</span>
+        <div>La pestaña <b>🏆 Acumulado</b> siempre refleja la suma de todas las semanas cargadas
+        y actualiza automáticamente el pódio y los premios.</div>
+      </div>
+      <div style="margin-top:4px;padding:10px 13px;background:rgba(255,140,0,.1);
+        border-radius:8px;font-size:.76rem;color:rgba(255,255,255,.6)">
+        💡 <b>Tip:</b> Si necesitas corregir el archivo de una semana ya cargada, ve a esa pestaña,
+        haz clic en <i>"↻ Actualizar archivo"</i> y sube la versión corregida.
+        Las otras semanas no se ven afectadas.
+      </div>
+    </div>
+  </div>
+  </div>`;
+}
+
+function getTopNGrupos(sem,n){
+  const w=getGroupWinners(sem);
+  const names=Object.values(w).flat().slice(0,n*2);
+  return names.slice(0,3).map(x=>x.split(' ')[0]).join(', ')+(names.length>3?'...':'');
+}
+
+// ═══ PAGE: SEMANA ════════════════════════════════════════════
+function rSemana(sem){
+  const el=$('page-s'+sem);
+  const cfg=SCFG[sem];
+  const hasD=weekData[sem]&&Object.keys(weekData[sem]).length>0;
+  const isCur=sem===META.semana_actual;
+  const isPast=sem<META.semana_actual;
+  const dates=META.semana_config[sem].dates;
+
+  const stTxt=hasD?'✅ Resultados calculados':isCur?'🔴 Semana activa':'⏳ Pendiente';
+  const stCls=hasD?'std':isCur?'sta':'stp';
+
+  let html = ballRow(
+    ['ball-sm','ball-md','ball-lg','ball-md','ball-sm'],
+    [0,-1,-2,-3,-4]
+  );
+  html +=`
+  <!-- BANNER -->
+  <div class="wb" style="background:linear-gradient(135deg,${cfg.col}22,var(--az2));border-color:${cfg.col}44">
+    <div class="wb-info" style="display:flex;align-items:center;gap:14px">
+      ${ballHTML('ball-lg','style="flex-shrink:0"')}
+      <div>
+        <div class="wb-lbl" style="color:${cfg.col}">📅 SEMANA ${sem}</div>
+        <div class="wb-dates">📆 ${dates}</div>
+        <div class="wb-rule">
+          <b>Sistema de puntos por grupo:</b><br>
+          📈 Mejor cumplimiento = <b>3 pts</b> &nbsp;·&nbsp;
+          👟 Mejor UPT = <b>3 pts</b> &nbsp;·&nbsp;
+          🎯 Mejor conversión = <b>3 pts</b><br>
+          <span style="color:#ff9999">⚠️ Condición: cumplimiento ≥ 100% para recibir puntos en cualquier categoría</span>
+        </div>
+      </div>
+    </div>
+    <span class="wstatus ${stCls}">${stTxt}</span>
+  </div>
+
+  <!-- ACCIONES -->
+  <div class="abar">
+    <button class="btn bsv" onclick="guardarClick()">💾 Guardar archivo</button>
+    ${hasD?`<button class="btn bex" onclick="exportSemana(${sem})">📥 Exportar CSV</button>
+    <button class="btn bcl" onclick="clearSem(${sem})">🗑️ Limpiar semana ${sem}</button>`:''}
+  </div>
+
+  <!-- UPLOAD -->
+  <div id="uw${sem}">
+  ${hasD?`<div class="up-loaded">
+    <div class="ic">✅</div>
+    <div class="inf">
+      <div class="fn">Semana ${sem} — datos cargados</div>
+      <div class="fm">${Object.keys(weekData[sem]).length} tiendas · Fuente: cubo todos los canales 3.xlsx (Google Drive)</div>
+    </div>
+    <button class="btn-ch" onclick="resetUp(${sem})">↻ Actualizar archivo</button>
+    <button class="btn-ch" style="margin-left:8px;background:rgba(41,128,185,.25)"
+      onclick="manualLoadFromDrive(${sem})">🔄 Drive</button>
+  </div>`:''}
+  <div id="uz${sem}" class="upload-z" ${hasD?'style="display:none"':''}
+    ondragover="this.classList.add('drag');event.preventDefault()"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="this.classList.remove('drag');dropFile(event,${sem})">
+    <span class="up-icon">📊</span>
+    <div class="up-t">Cargar Excel — Semana ${sem}</div>
+    <div class="up-h">Al abrir la página el sistema descarga automáticamente<br>
+      <b>cubo todos los canales 3.xlsx</b> desde Google Drive.<br>
+      También puedes subirlo manualmente o forzar la descarga.</div>
+    <div class="file-wrap">
+      <input type="file" accept=".xlsx,.xls" onchange="loadFile(this.files[0],${sem})">
+      <div class="btn-up">📂 Seleccionar archivo</div>
+    </div>
+    <button class="btn-up btn-drive" onclick="manualLoadFromDrive(${sem})">🔄 Descargar desde Google Drive</button>
+  </div>
+  <div id="err${sem}"></div>
+  </div>`;
+
+  // STATS si hay datos
+  if(hasD){
+    let totElig=0,totPts=0,ganadores=0;
+    D.grupos.forEach(g=>{
+      const gp=calcGroupPts(g,weekData[sem]);
+      Object.values(gp).forEach(v=>{if(v.eligible)totElig++;if(v.pts>0)ganadores++;totPts+=v.pts;});
+    });
+    html+=`<div class="wstats">
+      <div class="ws"><div class="wsv">${totElig}</div><div class="wsl">Tiendas elegibles</div></div>
+      <div class="ws"><div class="wsv" style="color:#ff9999">${Object.keys(weekData[sem]).length-totElig}</div><div class="wsl">Sin cumplir 100%</div></div>
+      <div class="ws"><div class="wsv" style="color:#7effa0">${ganadores}</div><div class="wsl">Con puntos</div></div>
+      <div class="ws"><div class="wsv" style="color:var(--or2)">${totPts}</div><div class="wsl">Puntos entregados</div></div>
+      <div class="ws"><div class="wsv">${D.grupos.length}</div><div class="wsl">Grupos</div></div>
+    </div>`;
+  }
+
+  // GRUPOS - filtros
+  const tipos=[...new Set(D.grupos.map(g=>g.tipo))];
+  html+=`<div class="st">⚽ Competencia por Grupos — Semana ${sem}</div>
+  <div class="ctrl">
+    <input class="srch" id="gs${sem}" placeholder="🔍 Buscar tienda o grupo..." oninput="filterGC(${sem},this.value,'')">
+    <select class="sel" onchange="filterGC(${sem},document.getElementById('gs${sem}').value,this.value)">
+      <option value="">Todos los tipos</option>
+      ${tipos.map(t=>`<option value="${t}">${tipoShort(t)}</option>`).join('')}
+    </select>
+  </div>
+  <div class="gc-grid" id="gcg${sem}">`;
+
+  D.grupos.forEach(g=>{ html+=groupCard(g, sem); });
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+// ── GROUP CARD ────────────────────────────────────────────────
+function groupCard(g, sem){
+  const sd=weekData[sem]||null;
+  const gp=calcGroupPts(g,sd);
+  const tc=tipoClass(g.tipo);
+  const ts=tipoShort(g.tipo);
+
+  // Ordenar: elegibles primero, luego por pts
+  const rows=g.tiendas.map(n=>{
+    const t=D.tiendas.find(x=>x.nombre===n)||{};
+    return {n,zona:t.zona||'',...gp[n]};
+  }).sort((a,b)=>{
+    if(a.eligible!==b.eligible)return b.eligible-a.eligible;
+    return b.pts-a.pts;
+  });
+
+  const hasDatos=sd!=null;
+  const anyElig=rows.some(r=>r.eligible);
+  const condColor=hasDatos?(anyElig?'rgba(26,122,60,.2)':'rgba(192,57,43,.2)'):'rgba(255,255,255,.04)';
+  const condTxt=hasDatos?(anyElig?'✅ Hay tiendas elegibles':'❌ Ninguna cumple 100% — sin puntos'):'⏳ Sin datos esta semana';
+
+  // ¿Quién ganó cada categoría? (ganó = tiene el mejor indicador del grupo Y cumple ≥100%)
+  const winCumpl=rows.filter(r=>r.pts_cumpl>0).map(r=>r.n);
+  const winUPT  =rows.filter(r=>r.pts_upt>0).map(r=>r.n);
+  const winConv =rows.filter(r=>r.pts_conv>0).map(r=>r.n);
+  // ¿Quién tiene el mejor indicador ABSOLUTO del grupo? (incluye no-elegibles)
+  const bestUPTg =rows.filter(r=>r.best_upt_grupo).map(r=>r.n);
+  const bestConvg=rows.filter(r=>r.best_conv_grupo).map(r=>r.n);
+  // ¿Se perdieron puntos? (hay mejor UPT/Conv pero no cumple)
+  const uptPerdido =hasDatos&&bestUPTg.length>0&&winUPT.length===0;
+  const convPerdido=hasDatos&&bestConvg.length>0&&winConv.length===0;
+
+  // Grid columns dinámico
+  const gcols=hasDatos?'1.8fr 1fr 1fr 1fr 60px':'2fr 50px';
+
+  let inner=`<div class="gc" data-grp="${g.nombre.toLowerCase()}" data-tipo="${g.tipo}">
+  <div class="gc-hdr" style="background:linear-gradient(135deg,${SCFG[sem]?.col||'#1A7A3C'}33,var(--az3))">
+    <div>
+      <h3>${g.nombre}</h3>
+      <div class="gc-hdr-meta">${g.tiendas.length} tiendas · ${g.n_con_conv||0} con conversión</div>
+    </div>
+    <span class="gc-tipo badge ${tc}">${ts}</span>
+  </div>
+  <div class="gc-cond" style="background:${condColor}">
+    <span>${condTxt}</span>
+    ${uptPerdido||convPerdido?`<span style="margin-left:8px;font-size:.7rem;color:#ffb347">
+      ⚠️ ${[uptPerdido?'UPT':'',convPerdido?'Conv':''].filter(Boolean).join('+')} sin otorgar — mejor indicador no cumplió</span>`:''}
+  </div>
+  <!-- HEADER INDICADORES -->
+  <div style="display:grid;grid-template-columns:${gcols};padding:6px 14px;
+    background:rgba(255,255,255,.03);font-size:.63rem;color:rgba(255,255,255,.4);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:700">
+    <span>Tienda</span>
+    ${hasDatos?`<span style="text-align:center">📈 Cumpl%</span>
+    <span style="text-align:center">👟 UPT</span>
+    <span style="text-align:center">🎯 Conv%</span>`:''}
+    <span style="text-align:center">Pts</span>
+  </div>`;
+
+  rows.forEach(r=>{
+    const isElig=r.eligible;
+    const inelCls=hasDatos&&!isElig?'ineligible':'';
+    const maxPts=Math.max(...rows.map(x=>x.pts),0);
+    const pct=maxPts>0?Math.round(r.pts/maxPts*100):0;
+
+    const cumplHl=winCumpl.includes(r.n)?`color:#7effa0;font-weight:700`:'';
+    // UPT: verde si ganó puntos, amarillo si tiene el mayor UPT del grupo pero no cumplió
+    const uptHl  =winUPT.includes(r.n)?`color:#7ec8ff;font-weight:700`
+                 :(bestUPTg.includes(r.n)&&!r.eligible?`color:#ffb347;font-weight:700`:'');
+    const convHl =winConv.includes(r.n)?`color:#e0b0ff;font-weight:700`
+                 :(bestConvg.includes(r.n)&&!r.eligible?`color:#ffb347;font-weight:700`:'');
+
+    inner+=`<div class="store-row ${inelCls}" style="grid-template-columns:${gcols};"
+      onclick="openStoreModal('${r.n.replace(/'/g,"\'")}',${sem})">
+      <div>
+        <div class="sr-name">${r.n}
+          ${r.pts===9?'<span style="font-size:.7rem">⭐</span>':''}
+        </div>
+        <div class="sr-zona">${r.zona}</div>
+        ${hasDatos&&!isElig?`<span class="inel-tag">❌ cumpl < 100%</span>`:''}
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">
+          ${winCumpl.includes(r.n)?'<span class="win-cumpl">📈 Best cumpl</span>':''}
+          ${winUPT.includes(r.n)?'<span class="win-upt">👟 Best UPT</span>':''}
+          ${winConv.includes(r.n)?'<span class="win-conv">🎯 Best conv</span>':''}
+          ${bestUPTg.includes(r.n)&&!winUPT.includes(r.n)?'<span style="background:rgba(255,179,71,.15);color:#ffb347;border:1px solid rgba(255,179,71,.4);border-radius:4px;padding:1px 5px;font-size:.6rem">👟 Mayor UPT grupo</span>':''}
+          ${bestConvg.includes(r.n)&&!winConv.includes(r.n)?'<span style="background:rgba(255,179,71,.15);color:#ffb347;border:1px solid rgba(255,179,71,.4);border-radius:4px;padding:1px 5px;font-size:.6rem">🎯 Mayor Conv grupo</span>':''}
+        </div>
+      </div>
+      ${hasDatos?`
+      <div class="ind-box">
+        <div class="ind-val" style="${cumplHl}">${r.cumpl!=null?fP(r.cumpl):'—'}</div>
+        ${r.cumpl!=null?`<div class="prog" style="margin-top:3px"><div class="prog-f" style="width:${Math.min(r.cumpl/1.5*100,100).toFixed(0)}%;background:${r.cumpl>=COND?'var(--vd2)':'var(--rd)'}"></div></div>`:''}
+      </div>
+      <div class="ind-box"><div class="ind-val" style="${uptHl}">${r.upt!=null?fN(r.upt):'—'}</div></div>
+      <div class="ind-box"><div class="ind-val" style="${convHl}">${r.conv!=null&&r.conv>0?fP(r.conv):'N/A'}</div></div>`:''}
+      <div class="pts-box">
+        ${hasDatos?`<div class="pts" style="${r.pts>0?'color:var(--or2)':'color:rgba(255,255,255,.25)'}">${r.pts}</div>`
+        :`<div style="font-size:.65rem;color:rgba(255,255,255,.2)">—</div>`}
+      </div>
+    </div>`;
+  });
+
+  inner+=`</div>`;
+  return inner;
+}
+
+function filterGC(sem,q,tipo){
+  const qn=norm(q);
+  document.querySelectorAll(`#gcg${sem} .gc`).forEach(c=>{
+    const ng=c.dataset.grp||'';
+    const ti=c.dataset.tipo||'';
+    const names=Array.from(c.querySelectorAll('.sr-name')).map(x=>norm(x.textContent)).join('|');
+    const mQ=!qn||ng.includes(qn.toLowerCase())||names.includes(qn);
+    const mT=!tipo||ti===tipo;
+    c.style.display=(mQ&&mT)?'':'none';
+  });
+}
+
+// ── STORE MODAL ───────────────────────────────────────────────
+function openStoreModal(nombre,sem){
+  const t=D.tiendas.find(x=>x.nombre===nombre)||{};
+  const g=D.grupos.find(x=>x.tiendas.includes(nombre))||{};
+  const sd=weekData[sem];
+  const d=sd?matchStore(nombre,sd):null;
+  const cumpl=d?d.cumpl:null;
+  const elig=cumpl!=null&&cumpl>=COND;
+
+  const gp=sd&&g?calcGroupPts(g,sd):{};
+  const v=gp[nombre]||{pts:0,pts_cumpl:0,pts_upt:0,pts_conv:0};
+
+  $('mbody').innerHTML=`
+  <div style="font-family:'Bebas Neue';font-size:1.3rem;color:var(--or2);margin-bottom:4px">${nombre}</div>
+  <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-bottom:12px">
+    ${t.tipo||''} · ${t.zona||''} · ${g.nombre||''}
+  </div>
+  ${d?`
+  <div style="background:${elig?'rgba(26,122,60,.2)':'rgba(192,57,43,.2)'};
+    border:1px solid ${elig?'var(--vd2)':'var(--rd)'};border-radius:8px;padding:10px;margin-bottom:14px">
+    ${elig?'✅ ELEGIBLE — Cumplimiento ≥ 100%':'❌ NO ELEGIBLE — Cumplimiento < 100% — 0 puntos en todas las categorías'}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+    <div style="background:rgba(26,122,60,.15);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-bottom:4px">📈 CUMPLIMIENTO</div>
+      <div style="font-size:1.3rem;font-weight:700;color:${cumpl>=COND?'#7effa0':'#ff9999'}">${fP(cumpl)}</div>
+      <div style="font-size:.65rem;margin-top:4px">${fM(d.venta)} / ${fM(d.presupuesto)}</div>
+      <div style="font-family:'Bebas Neue';font-size:1rem;color:var(--or2);margin-top:6px">${v.pts_cumpl} pts</div>
+    </div>
+    <div style="background:rgba(41,128,185,.15);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-bottom:4px">👟 UPT</div>
+      <div style="font-size:1.3rem;font-weight:700;color:${v.pts_upt>0?'#7ec8ff':v.best_upt_grupo?'#ffb347':'#7ec8ff'}">${fN(d.upt)}</div>
+      <div style="font-size:.6rem;margin-top:3px;color:rgba(255,255,255,.4)">${v.best_upt_grupo?'Mayor UPT del grupo':'art/ticket'}</div>
+      <div style="font-family:'Bebas Neue';font-size:1rem;color:${v.pts_upt>0?'var(--or2)':'rgba(255,255,255,.3)'};margin-top:6px">
+        ${v.pts_upt>0?v.pts_upt+' pts':(v.best_upt_grupo&&!elig?'mayor UPT — no elegible':'0 pts')}</div>
+    </div>
+    <div style="background:rgba(106,26,122,.15);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-bottom:4px">🎯 CONVERSIÓN</div>
+      <div style="font-size:1.3rem;font-weight:700;color:${v.pts_conv>0?'#e0b0ff':v.best_conv_grupo?'#ffb347':'#e0b0ff'}">${d.conv>0?fP(d.conv):'N/A'}</div>
+      <div style="font-size:.6rem;margin-top:3px;color:rgba(255,255,255,.4)">${v.best_conv_grupo?'Mayor Conv del grupo':'&nbsp;'}</div>
+      <div style="font-family:'Bebas Neue';font-size:1rem;color:${v.pts_conv>0?'var(--or2)':'rgba(255,255,255,.3)'};margin-top:6px">
+        ${v.pts_conv>0?v.pts_conv+' pts':(v.best_conv_grupo&&!elig?'mayor Conv — no elegible':'0 pts')}</div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:12px;background:rgba(201,168,76,.15);
+    border:1px solid var(--or);border-radius:8px">
+    <div style="font-size:.72rem;color:rgba(255,255,255,.5)">PUNTOS SEMANA ${sem}</div>
+    <div class="pts" style="font-size:2rem">${v.pts}</div>
+    <div style="font-size:.7rem;color:rgba(255,255,255,.4)">de 9 posibles</div>
+  </div>`
+  :`<div style="text-align:center;padding:30px;color:rgba(255,255,255,.35)">
+    <div style="font-size:2rem;margin-bottom:8px">📂</div>
+    Sin datos para Semana ${sem}
+  </div>`}`;
+  $('modal').classList.add('open');
+}
+
+// ── FILE UPLOAD ───────────────────────────────────────────────
+async function loadFile(file,sem){if(file && await checkPassword())processFile(file,sem);}
+async function dropFile(e,sem){e.preventDefault();const f=e.dataTransfer.files[0];if(f && await checkPassword())processFile(f,sem);}
+function resetUp(sem){$('uz'+sem).style.display='';
+  const l=$('uw'+sem).querySelector('.up-loaded');if(l)l.remove();}
+function clearSem(sem){
+  if(!confirm(`¿Limpiar datos de Semana ${sem}? Esto borrará los resultados de esa semana.`))return;
+  delete weekData[sem];saveState();
+  ['s'+sem,'inicio','acumulado'].forEach(p=>{document.getElementById('page-'+p).dataset.ok='';});
+  rSemana(sem);document.getElementById('page-s'+sem).dataset.ok='1';
+  toast(`Semana ${sem} limpiada`);
+}
+
+async function processFile(file,sem,shouldUpload=true){
+  const errEl=$('err'+sem);
+  if(errEl) errEl.innerHTML=`<div class="err">⏳ Leyendo ${file.name}...</div>`;
+  try{
+    const data=await parseExcelFull(file);
+    const cnt=Object.keys(data).length;
+    if(cnt===0)throw new Error('No se encontraron tiendas con datos');
+    weekData[sem]=data; saveState(); // localStorage como respaldo
+    // Subir al backend para persistencia (solo en carga manual, la auto ya está persistida)
+    if(shouldUpload){
+      try{
+        await uploadExcelToBackend(file, sem);
+      }catch(upErr){
+        console.error('Upload error:', upErr);
+        toast('⚠️ Datos cargados localmente, pero no se pudieron guardar en el servidor.', 5000);
+      }
+    }
+    // Refrescar páginas necesarias SIN tocar otras semanas
+    ['s'+sem,'inicio','acumulado'].forEach(p=>{
+      document.getElementById('page-'+p).dataset.ok='';
+    });
+    rSemana(sem); document.getElementById('page-s'+sem).dataset.ok='1';
+    if($('page-inicio').classList.contains('active'))rInicio();
+    if($('page-acumulado').classList.contains('active'))rAcumulado();
+    if(errEl)errEl.innerHTML='';
+    toast(`✅ Semana ${sem}: ${cnt} tiendas cargadas.`,3000);
+  }catch(err){
+    if(errEl)errEl.innerHTML=`<div class="err">❌ ${err}</div>`;
+    toast('Error al cargar el archivo',4000);
+  }
+}
+
+function exportSemana(sem){
+  const sd=weekData[sem];if(!sd)return;
+  let csv='Grupo,Tipo,Tienda,Zona,Cumpl%,UPT,Conv%,Elegible,Pts_Cumpl,Pts_UPT,Pts_Conv,Total_Pts\n';
+  D.grupos.forEach(g=>{
+    const gp=calcGroupPts(g,sd);
+    g.tiendas.forEach(n=>{
+      const t=D.tiendas.find(x=>x.nombre===n)||{};
+      const v=gp[n]||{};
+      const d=matchStore(n,sd)||{};
+      csv+=`"${g.nombre}","${g.tipo}","${n}","${t.zona||''}",`;
+      csv+=`"${d.cumpl!=null?fP(d.cumpl):'—'}","${d.upt!=null?fN(d.upt):'—'}","${d.conv>0?fP(d.conv):'N/A'}",`;
+      csv+=`"${v.eligible?'SI':'NO'}",${v.pts_cumpl||0},${v.pts_upt||0},${v.pts_conv||0},${v.pts||0}\n`;
+    });
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`Mundial_Tennis_S${sem}.csv`;a.click();
+}
+
+// ═══ PAGE: ACUMULADO ════════════════════════════════════════
+// ── HELPERS REMATADORES ──────────────────────────────────────
+const isRemat = tipo => tipo.includes('REMATADOR');
+
+function rAcumulado(){
+  const el=$('page-acumulado');
+  const ctAll=buildCumTable();
+  // Grandes premios: solo Línea y Outlet
+  const ctCompite=ctAll.filter(r=>!isRemat(r.tipo));
+  const ctRemat  =ctAll.filter(r=>isRemat(r.tipo));
+  const top3=ctCompite.slice(0,3);
+  const semsOK=[1,2,3,4].filter(s=>weekData[s]&&Object.keys(weekData[s]).length>0);
+
+  let html=`<div class="st">🏆 Acumulado Final — Gran Campeonato</div>
+  <!-- AVISO REMATADORES -->
+  <div style="background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);
+    border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.8rem;
+    display:flex;align-items:center;gap:10px">
+    <span style="font-size:1.3rem">ℹ️</span>
+    <span><b style="color:#ff9999">Rematadores excluidos de grandes premios.</b>
+    BIMA, ROSELLÓN y EVENTOS TENNIS CARNAVAL compiten solo por el
+    <b style="color:#7effa0">premio de grupo mensual (${fCOP(META.premios.ganador_grupo)})</b>.</span>
+  </div>`;
+
+  // PODIO (solo Línea + Outlet)
+  if(ctCompite[0]&&ctCompite[0].pts_total>0){
+    // Balones decorativos sobre el pódio
+    html += ballRow(
+      ['ball-sm','ball-md','ball-xl','ball-md','ball-sm'],
+      [-0.5,-1.5,-2.5,-3.5,-4.5]
+    );
+    const podOrder=[1,0,2];
+    html+=`<div class="podium">`;
+    podOrder.forEach(i=>{
+      if(!top3[i])return;
+      const r=top3[i];
+      const posN=i+1;
+      const prz=[META.premios.campeon,META.premios.subcampeon,META.premios.tercer_puesto][i];
+      const isFirst=posN===1;
+      const ptsLabel=['pts','pts S1','pts S2','pts S3','pts S4'];
+      const ptsDet=[1,2,3,4].filter(s=>weekData[s]).map(s=>{
+        let t=0;D.grupos.forEach(g=>{const gp=calcGroupPts(g,weekData[s]);t+=(gp[r.nombre]||{pts:0}).pts;});
+        return `S${s}:${t}`;
+      }).join(' · ');
+      html+=`<div class="pod pod-${posN}">
+        <div class="pod-ico">${medal(posN)}</div>
+        <div class="pod-n" style="font-size:${isFirst?'.88':'.76'}rem;
+          color:${isFirst?'#fff':'rgba(255,255,255,.88)'}">
+          ${r.nombre}
+        </div>
+        <div style="font-size:.62rem;color:rgba(255,255,255,.45);
+          margin:4px 0 6px;text-align:center;line-height:1.3">
+          ${r.zona}<br>
+          <span style="color:rgba(255,255,255,.3);font-size:.58rem">${ptsDet}</span>
+        </div>
+        <div class="pod-div"></div>
+        <div class="pod-pts" style="font-size:${isFirst?'2rem':'1.5rem'}">${r.pts_total}</div>
+        <div style="font-size:.62rem;color:rgba(255,255,255,.4);margin-bottom:8px">PUNTOS</div>
+        <div class="pod-div"></div>
+        <div class="pod-val" style="color:var(--or2);font-size:${isFirst?'1.05':'.9'}rem">
+          ${fCOP(prz)}
+        </div>
+        <div style="font-size:.6rem;color:rgba(255,255,255,.38);margin-top:3px">para el equipo</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  } else {
+    html+=`<div style="text-align:center;padding:36px;color:rgba(255,255,255,.35)">
+      <div style="font-size:2.5rem;margin-bottom:10px">⏳</div>
+      Carga los datos de al menos una semana para ver el acumulado
+    </div>`;
+  }
+
+  // PREMIOS GRANDES (Línea + Outlet) + especiales
+  const botaUPT   = getBotaDeOroUPT();
+  const bottinConv= getBottinDeOroConv();
+  const puskas    = getPuskasWinner();
+  html+=`<div class="st">🏆 Premios del Torneo — $${(15500000).toLocaleString('es-CO')} COP en premios</div>
+  <div class="award-grid" style="margin-bottom:22px">
+  ${awardCard('copa','🏆','Copa Mundial de Ventas',
+    'Tienda (Línea u Outlet) con más puntos acumulados al cierre de las 4 semanas. Premio para todo el equipo.',
+    top3[0]?{nombre:top3[0].nombre,zona:top3[0].zona}:null,
+    top3[0]?top3[0].pts_total+' pts · '+fCOP(META.premios.campeon):fCOP(META.premios.campeon))}
+  ${awardCard('plata','🥈','Copa de Plata Comercial',
+    'Tienda que alcance la gran final y obtenga el segundo lugar. Premio para todo el equipo.',
+    top3[1]?{nombre:top3[1].nombre,zona:top3[1].zona}:null,
+    top3[1]?top3[1].pts_total+' pts · '+fCOP(META.premios.subcampeon):fCOP(META.premios.subcampeon))}
+  ${awardCard('bronce','🥉','Bronce de la Gloria',
+    'Tienda en el tercer puesto del campeonato. Premio para todo el equipo.',
+    top3[2]?{nombre:top3[2].nombre,zona:top3[2].zona}:null,
+    top3[2]?top3[2].pts_total+' pts · '+fCOP(META.premios.tercer_puesto):fCOP(META.premios.tercer_puesto))}
+  ${awardCard('upt','⚽','Bota de Oro UPT',
+    'Mejor UPT del torneo entre tiendas elegibles (cumplimiento ≥ 100%). Premio especial independiente.',
+    botaUPT,
+    botaUPT?fN(botaUPT.valor)+' art/tkt · '+fCOP(META.premios.bota_upt):fCOP(META.premios.bota_upt))}
+  ${awardCard('conv','🎯','Botín de Oro de Conversión',
+    'Mejor tasa de conversión acumulada entre tiendas elegibles. Premio especial independiente.',
+    bottinConv,
+    bottinConv?fP(bottinConv.valor)+' · '+fCOP(META.premios.botin_conv):fCOP(META.premios.botin_conv))}
+  ${awardCard('puskas','💰','Premio Puskás Comercial',
+    'Factura de mayor valor registrada durante el Mundial. Premio especial independiente.',
+    puskas,
+    puskas?fCOP(Math.round(puskas.valor))+' ticket · '+fCOP(META.premios.puskas):fCOP(META.premios.puskas))}
+  ${awardCard('grupo','🏅','Premio Líder de Grupo',
+    'Tienda con más puntos en su grupo al cierre del mes. 17 premios en total (1 por grupo). Aplica Línea, Outlet y Rematadores.',
+    null, fCOP(META.premios.ganador_grupo)+' · 17 grupos')}
+  </div>
+
+  <!-- REMATADORES — su propio bloque -->
+  ${ctRemat.length>0?rematadoresBlock(ctRemat,semsOK):''}
+
+  <!-- GANADORES POR GRUPO / MES -->
+  ${semsOK.length>0?buildGrupoPremiosTable(semsOK):''}
+
+  <!-- EXPORTAR -->
+  <div class="abar" style="margin-bottom:20px">
+    <button class="btn bex" onclick="exportAcumulado()">📥 Exportar ranking</button>
+    <button class="btn bsv" onclick="exportGanadores()">🏆 Exportar premios</button>
+  </div>
+
+  <!-- RANKING LÍNEA + OUTLET -->
+  <div class="st" style="margin-top:8px">📊 Ranking Acumulado — Línea y Outlet</div>
+  <div class="ctrl">
+    <input class="srch" id="aq" placeholder="🔍 Buscar..." oninput="rkQ=this.value;renderAcTable()">
+    <select class="sel" id="at" onchange="rkT=this.value;renderAcTable()">
+      <option value="">Todos los tipos</option>
+      ${[...new Set(D.tiendas.filter(t=>!isRemat(t.tipo)).map(t=>t.tipo))].map(t=>`<option value="${t}">${tipoShort(t)}</option>`).join('')}
+    </select>
+    <select class="sel" id="az" onchange="rkZ=this.value;renderAcTable()">
+      <option value="">Todas las zonas</option>
+      ${[...new Set(D.tiendas.filter(t=>!isRemat(t.tipo)).map(t=>t.zona))].sort().map(z=>`<option>${z}</option>`).join('')}
+    </select>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+  <div class="tw"><table id="actbl">
+    <thead><tr>
+      <th onclick="sortAc('pos')">#</th>
+      <th onclick="sortAc('nombre')">Tienda</th>
+      <th onclick="sortAc('tipo')">Tipo</th>
+      <th onclick="sortAc('zona')">Zona</th>
+      <th onclick="sortAc('pts_s1')">S1📅</th>
+      <th onclick="sortAc('pts_s2')">S2📅</th>
+      <th onclick="sortAc('pts_s3')">S3📅</th>
+      <th onclick="sortAc('pts_s4')">S4📅</th>
+      <th onclick="sortAc('pts_total')">TOTAL</th>
+      <th>Premio</th>
+    </tr></thead>
+    <tbody id="acbody"></tbody>
+  </table></div></div>`;
+
+  el.innerHTML=html;
+  rkQ=''; rkT=''; rkZ='';
+  renderAcTable();
+
+  setTimeout(()=>{
+    const ctx=document.getElementById('ch-top');if(!ctx)return;
+    const top15=ctCompite.slice(0,15);
+    if(charts['ac'])charts['ac'].destroy();
+    charts['ac']=new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:top15.map(r=>r.nombre.slice(0,14)),
+        datasets:[
+          {label:'S1',data:top15.map(r=>r.pts_s1),backgroundColor:'rgba(26,122,60,.8)',stack:'s'},
+          {label:'S2',data:top15.map(r=>r.pts_s2),backgroundColor:'rgba(41,128,185,.8)',stack:'s'},
+          {label:'S3',data:top15.map(r=>r.pts_s3),backgroundColor:'rgba(106,26,122,.8)',stack:'s'},
+          {label:'S4',data:top15.map(r=>r.pts_s4),backgroundColor:'rgba(201,168,76,.8)',stack:'s'},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'rgba(255,255,255,.7)',font:{size:9}}}},
+        scales:{x:{ticks:{color:'rgba(255,255,255,.6)',font:{size:9},maxRotation:45},grid:{color:'rgba(255,255,255,.04)'}},
+                y:{stacked:true,ticks:{color:'rgba(255,255,255,.6)',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'},suggestedMax:36}}}
+    });
+  },120);
+}
+
+// ── SPECIAL AWARDS COMPUTATION ───────────────────────────────
+// Returns {nombre, zona, tipo, valor} for best UPT across all weeks (eligible only)
+function getBotaDeOroUPT(){
+  let best=null;
+  for(let s=1;s<=4;s++){
+    const sd=weekData[s]; if(!sd) continue;
+    D.tiendas.forEach(t=>{
+      const d=matchStore(t.nombre,sd); if(!d) return;
+      if(d.cumpl==null||d.cumpl<COND) return; // must be eligible
+      if(d.upt==null||d.upt<=0) return;
+      if(!best||d.upt>best.valor)
+        best={nombre:t.nombre,zona:t.zona,tipo:t.tipo,valor:d.upt,semana:s};
+    });
+  }
+  return best;
+}
+function getBottinDeOroConv(){
+  let best=null;
+  for(let s=1;s<=4;s++){
+    const sd=weekData[s]; if(!sd) continue;
+    D.tiendas.forEach(t=>{
+      const d=matchStore(t.nombre,sd); if(!d) return;
+      if(d.cumpl==null||d.cumpl<COND) return;
+      if(d.conv==null||d.conv<=0) return;
+      if(!best||d.conv>best.valor)
+        best={nombre:t.nombre,zona:t.zona,tipo:t.tipo,valor:d.conv,semana:s};
+    });
+  }
+  return best;
+}
+function getPuskasWinner(){
+  let best=null;
+  for(let s=1;s<=4;s++){
+    const sd=weekData[s]; if(!sd) continue;
+    D.tiendas.forEach(t=>{
+      const d=matchStore(t.nombre,sd); if(!d) return;
+      // ticket_promedio stored in weekData if extracted
+      const tk=d.ticket||d.valor_ticket||null; if(!tk||tk<=0) return;
+      if(!best||tk>best.valor)
+        best={nombre:t.nombre,zona:t.zona,tipo:t.tipo,valor:tk,semana:s};
+    });
+  }
+  return best;
+}
+
+// ── AWARD CARD HTML ───────────────────────────────────────────
+function awardCard(cls,ico,name,desc,winner,valFmt){
+  const wHTML=winner
+    ?`<div class="award-winner">${ico} <b>${winner.nombre}</b><br>
+       <span style="font-size:.68rem;opacity:.65">${winner.zona} · ${valFmt}</span></div>`
+    :`<div class="award-winner" style="color:rgba(255,255,255,.3)">⏳ Pendiente — carga datos de las semanas</div>`;
+  return `<div class="award award-${cls}">
+    <div class="award-ico">${ico}</div>
+    <div class="award-name">${name}</div>
+    <div class="award-desc">${desc}</div>
+    ${wHTML}
+  </div>`;
+}
+
+// ── BLOQUE REMATADORES EN ACUMULADO ──────────────────────────
+function rematadoresBlock(ctRemat, semsOK){
+  // Mejor Rematador del mes = mayor pts_total
+  const mejor=ctRemat[0];
+  let html=`<div class="st" style="font-size:1.1rem;color:#ff9999">🏅 Rematadores — Premio de Grupo Mensual</div>
+  <div class="card" style="border:1px solid rgba(192,57,43,.4);margin-bottom:22px;
+    background:linear-gradient(135deg,rgba(192,57,43,.1),var(--az2))">
+    <div style="font-size:.78rem;color:rgba(255,255,255,.55);margin-bottom:12px">
+      ℹ️ Solo compiten por el premio de mejor del grupo (${fCOP(META.premios.ganador_grupo)}).
+      No participan en Campeón, Subcampeón ni 3er Puesto.
+    </div>
+    <div class="tw"><table><thead><tr>
+      <th>#</th><th>Tienda</th><th>Zona</th>
+      <th>S1</th><th>S2</th><th>S3</th><th>S4</th>
+      <th>Total</th><th>Premio mes</th>
+    </tr></thead><tbody>`;
+  ctRemat.forEach((r,i)=>{
+    const esMejor=i===0&&r.pts_total>0;
+    html+=`<tr class="${esMejor?'p1':''}">
+      <td>${esMejor?'🏅':i+1}</td>
+      <td><strong>${r.nombre}</strong></td>
+      <td><small style="color:rgba(255,255,255,.45)">${r.zona}</small></td>
+      <td>${r.pts_s1}</td><td>${r.pts_s2}</td><td>${r.pts_s3}</td><td>${r.pts_s4}</td>
+      <td class="pts">${r.pts_total}</td>
+      <td>${esMejor
+        ?`<span style="color:#7effa0;font-weight:700;font-size:.8rem">${fCOP(META.premios.ganador_grupo)}</span>`
+        :`<span style="color:rgba(255,255,255,.3);font-size:.72rem">—</span>`}
+      </td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>
+  ${mejor&&mejor.pts_total>0
+    ?`<div style="margin-top:12px;padding:10px;background:rgba(26,122,60,.2);
+        border-radius:8px;text-align:center;font-size:.82rem">
+        🏅 <b style="color:#7effa0">Mejor Rematador del mes: ${mejor.nombre}</b>
+        — ${fCOP(META.premios.ganador_grupo)} para su equipo
+      </div>`:''}
+  </div>`;
+  return html;
+}
+
+let rkQ='',rkT='',rkZ='';
+function renderAcTable(){
+  // Solo Línea y Outlet en el ranking de grandes premios
+  let data=buildCumTable().filter(r=>!isRemat(r.tipo));
+  if(rkQ){const q=norm(rkQ);data=data.filter(r=>norm(r.nombre).includes(q)||norm(r.zona).includes(q));}
+  if(rkT)data=data.filter(r=>r.tipo===rkT);
+  if(rkZ)data=data.filter(r=>r.zona===rkZ);
+  data.sort((a,b)=>rkSort.dir*((a[rkSort.col]||0)-(b[rkSort.col]||0)));
+  const tbody=$('acbody');if(!tbody)return;
+  // Ranking global sobre el conjunto filtrado (sin rematadores)
+  const baseRank=buildCumTable().filter(r=>!isRemat(r.tipo));
+  const globalRank={};baseRank.forEach((r,i)=>{globalRank[r.nombre]=i+1;});
+  tbody.innerHTML=data.map((r,i)=>{
+    const posG=globalRank[r.nombre]||i+1;
+    const prz=posG===1?'🥇 Campeón':posG===2?'🥈 Subcampeón':posG===3?'🥉 3er Puesto':'';
+    return `<tr class="${posG<=3?'p'+posG:''}">
+      <td>${medal(posG)}</td>
+      <td><strong style="font-size:.79rem">${r.nombre}</strong></td>
+      <td><span class="badge ${tipoClass(r.tipo)}">${tipoShort(r.tipo)}</span></td>
+      <td><small style="color:rgba(255,255,255,.45)">${r.zona}</small></td>
+      <td>${r.pts_s1}</td><td>${r.pts_s2}</td><td>${r.pts_s3}</td><td>${r.pts_s4}</td>
+      <td class="pts">${r.pts_total}</td>
+      <td><span style="font-size:.65rem;color:var(--or2)">${prz}</span></td>
+    </tr>`;
+  }).join('');
+}
+function sortAc(col){if(rkSort.col===col)rkSort.dir*=-1;else{rkSort.col=col;rkSort.dir=-1;}renderAcTable();}
+
+function buildGrupoPremiosTable(semsOK){
+  let html=`<div class="st" style="font-size:1.1rem">🏅 Mejor por Grupo cada Semana — ${fCOP(META.premios.ganador_grupo)}</div>
+  <div class="card" style="margin-bottom:22px;padding:0;overflow:hidden">
+  <div class="tw"><table><thead><tr>
+    <th>Grupo</th><th>Tipo</th>
+    ${semsOK.map(s=>`<th>Sem ${s}</th>`).join('')}
+  </tr></thead><tbody>`;
+  D.grupos.forEach(g=>{
+    const esRemat=isRemat(g.tipo);
+    html+=`<tr ${esRemat?'style="background:rgba(192,57,43,.08)"':''}>
+      <td><strong>${g.nombre}</strong>${esRemat?` <span style="font-size:.62rem;color:#ff9999">(solo 400K)</span>`:''}</td>
+      <td><span class="badge ${tipoClass(g.tipo)}">${tipoShort(g.tipo)}</span></td>`;
+    semsOK.forEach(s=>{
+      const w=getGroupWinners(s);
+      const gw=w[g.id];
+      if(gw&&gw.length){
+        const gp=calcGroupPts(g,weekData[s]);
+        const maxPts=Math.max(...gw.map(n=>(gp[n]||{}).pts||0));
+        html+=`<td>
+          <div style="font-size:.72rem;font-weight:700;color:#7effa0">${gw.map(n=>n.split(' ')[0]).join(', ')}</div>
+          <div class="pts" style="font-size:.9rem">${maxPts} pts</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.4)">${fCOP(META.premios.ganador_grupo)}</div>
+        </td>`;
+      } else {
+        html+=`<td style="color:rgba(255,255,255,.25);font-size:.7rem">—</td>`;
+      }
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div></div>
+  <div class="card" style="margin-bottom:22px">
+    <div class="st" style="font-size:1rem">📊 Top 15 — Línea y Outlet</div>
+    <div class="chw"><canvas id="ch-top"></canvas></div>
+  </div>`;
+  return html;
+}
+
+function exportAcumulado(){
+  const data=buildCumTable();
+  let csv='#,Tienda,Tipo,Zona,Grupo,S1,S2,S3,S4,Total,Premio\n';
+  const baseRank=data.filter(r=>!isRemat(r.tipo));
+  const globalRank={};baseRank.forEach((r,i)=>{globalRank[r.nombre]=i+1;});
+  data.forEach((r,i)=>{
+    const posG=globalRank[r.nombre];
+    const p=isRemat(r.tipo)?'Solo premio grupo':
+      posG===1?'Campeon':posG===2?'Subcampeon':posG===3?'3er Puesto':'';
+    csv+=`${i+1},"${r.nombre}","${r.tipo}","${r.zona}","${r.grupo_nombre}",${r.pts_s1},${r.pts_s2},${r.pts_s3},${r.pts_s4},${r.pts_total},"${p}"\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='Mundial_Tennis_Ranking_Final.csv';a.click();
+}
+
+function exportGanadores(){
+  const ct=buildCumTable();
+  const semsOK=[1,2,3,4].filter(s=>weekData[s]);
+  let csv='Semana,Grupo,Tipo,Ganador(es),Puntos,Premio COP\n';
+  semsOK.forEach(s=>{
+    const w=getGroupWinners(s);
+    D.grupos.forEach(g=>{
+      const gw=w[g.id];
+      if(gw&&gw.length){
+        const gp=calcGroupPts(g,weekData[s]);
+        const pts=Math.max(...gw.map(n=>(gp[n]||{}).pts||0));
+        csv+=`Semana ${s},"${g.nombre}","${g.tipo}","${gw.join('; ')}",${pts},${META.premios.ganador_grupo}\n`;
+      }
+    });
+  });
+  // Top 3 grandes premios — solo Línea y Outlet
+  const top3=ct.filter(r=>!isRemat(r.tipo)).slice(0,3);
+  const ps=[META.premios.campeon,META.premios.subcampeon,META.premios.tercer_puesto];
+  top3.forEach((r,i)=>{
+    csv+=`Final,Global,"${r.tipo}","${r.nombre}",${r.pts_total},${ps[i]}\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='Mundial_Tennis_Premios.csv';a.click();
+}
+
+// ── SCROLL + INIT ──────────────────────────────────────────
+window.addEventListener('scroll',()=>$('scrtop').classList.toggle('show',scrollY>260));
+// Inyecta src del balón en TODOS los img.ball-lazy del documento
+// — la imagen se carga una sola vez desde el servidor como archivo estático
+const BALL_PATH='ball.png';
+function injectBalls(){
+  document.querySelectorAll('img.ball-lazy').forEach(img=>{ img.src=BALL_PATH; });
+  // Watermark en tarjetas card-ball
+  document.querySelectorAll('.card-ball').forEach(card=>{
+    if(!card.querySelector('.card-ball-wm')){
+      const wm=document.createElement('img');
+      wm.className='card-ball-wm'; wm.src=BALL_PATH; wm.alt='';
+      card.appendChild(wm);
+    }
+  });
+}
+// Observer: inyecta balones cada vez que se agrega contenido al DOM
+const _ballObs=new MutationObserver(()=>injectBalls());
+_ballObs.observe(document.body,{childList:true,subtree:true});
+
+document.addEventListener('DOMContentLoaded',async ()=>{
+  // Cargar catálogo de tiendas y grupos desde el backend
+  try{
+    await loadCatalogFromBackend();
+  }catch(err){
+    console.error('Error cargando catálogo:', err);
+    toast('❌ No se pudo cargar el catálogo de tiendas desde el servidor', 6000);
+  }
+  loadState();
+  $('hbadge').textContent=`Semana ${META.semana_actual} — ${META.fechas[META.semana_actual][0]}`;
+  rInicio();
+  $('page-inicio').dataset.ok='1';
+  rSemana(1);
+  $('page-s1').dataset.ok='1';
+  injectBalls();
+  setupListeners();
+  $('loader').classList.add('hide');
+  // Cargar automáticamente el cubo desde Google Drive para la semana activa
+  autoLoadFromDrive(META.semana_actual);
+});
+
+function setupListeners(){
+  document.querySelectorAll('.nb[data-page]').forEach(btn=>{
+    btn.addEventListener('click',()=>goTo(btn.dataset.page));
+  });
+  const saveBtn=document.getElementById('btn-guardar');
+  if(saveBtn)saveBtn.addEventListener('click',guardarClick);
+  $('scrtop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  $('modal').addEventListener('click',closeModal);
+  document.querySelector('.mx').addEventListener('click',closeModal);
+}
+</script>
+
+</body></html>

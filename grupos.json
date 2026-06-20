@@ -1,0 +1,215 @@
+[
+  {
+    "id": 0,
+    "nombre": "Grupo Rematadores",
+    "tipo": "ALMACÉN REMATADOR",
+    "tiendas": [
+      "BIMA",
+      "ROSELLÓN",
+      "EVENTOS TENNIS CARNAVAL BQUILLA"
+    ]
+  },
+  {
+    "id": 1,
+    "nombre": "Outlet A",
+    "tipo": "ALMACÉN OUTLET",
+    "tiendas": [
+      "MONTERIA CENTRO",
+      "ZONA INDUSTRIAL 3",
+      "TENNIS GUAYABAL",
+      "ZONA INDUSTRIAL 1",
+      "UNICO PASTO",
+      "TENNIS UNICO NEIVA"
+    ]
+  },
+  {
+    "id": 2,
+    "nombre": "Outlet B",
+    "tipo": "ALMACÉN OUTLET",
+    "tiendas": [
+      "UNICO CALI",
+      "TENNIS TOBERIN",
+      "TOP MARK ANTARES",
+      "ARAUCO PREMIUM OUTLET SOPO",
+      "UNICO BARRANQUILLA",
+      "TENNIS EL EDEN"
+    ]
+  },
+  {
+    "id": 3,
+    "nombre": "Outlet C",
+    "tipo": "ALMACÉN OUTLET",
+    "tiendas": [
+      "FLORESTA OUTLET",
+      "TENNIS UNICO BUCARAMANGA",
+      "LA HERRADURA",
+      "UNICO DOS QUEBRADAS",
+      "TENNIS CHAPINERO OUTLET"
+    ]
+  },
+  {
+    "id": 4,
+    "nombre": "Outlet D",
+    "tipo": "ALMACÉN OUTLET",
+    "tiendas": [
+      "MANIZALES CENTRO",
+      "LA CENTRAL",
+      "DE MODA OUTLET",
+      "GRAN PLAZA",
+      "PUERTA DEL NORTE 1"
+    ]
+  },
+  {
+    "id": 5,
+    "nombre": "Línea A",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "CACIQUE",
+      "VENTURA PLAZA CUCUTA",
+      "SAN SILVESTRE",
+      "ANDINO",
+      "ALAMEDAS DEL SINU",
+      "GRAN ESTACION"
+    ]
+  },
+  {
+    "id": 6,
+    "nombre": "Línea B",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "PASTO CENTRO",
+      "TITAN",
+      "SANTA FE MEDELLIN",
+      "PLAZA CENTRAL",
+      "GUACARÍ",
+      "TENNIS JARDIN PLAZA CUCUTA"
+    ]
+  },
+  {
+    "id": 7,
+    "nombre": "Línea C",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "LA SABANA VILLAVICENCIO",
+      "LA ESTACION IBAGUE",
+      "SAN FRANCISCO SINCELEJO",
+      "TENNIS MULTIPLAZA BOGOTA",
+      "CHIPICHAPE",
+      "TENNIS UNICENTRO CALI"
+    ]
+  },
+  {
+    "id": 8,
+    "nombre": "Línea D",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "PRIMAVERA URBANA",
+      "SAN PEDRO NEIVA",
+      "BUENA VISTA MONTERIA",
+      "VIVA BARRANQUILLA",
+      "MONEDA",
+      "TESORO 1"
+    ]
+  },
+  {
+    "id": 9,
+    "nombre": "Línea E",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "UNICENTRO VILLAVICENCIO",
+      "TENNIS MALLPLAZA NQS",
+      "TENNIS MALL PLAZA BARRANQUILLA",
+      "ARMENIA",
+      "IPIALES",
+      "CARACOLI"
+    ]
+  },
+  {
+    "id": 10,
+    "nombre": "Línea F",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "AMERICAS",
+      "UNICENTRO ARMENIA",
+      "TENNIS UNICENTRO PASTO",
+      "CARIBE PLAZA/CGENA",
+      "FUNDADORES MANIZALES",
+      "UNICENTRO BOGOTA 2"
+    ]
+  },
+  {
+    "id": 11,
+    "nombre": "Línea G",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "TENNIS ARKADIA",
+      "SALITRE",
+      "PORTAL DEL QUINDIO",
+      "JARDÍN PLAZA 2",
+      "PREMIUM PLAZA",
+      "CENTRO MAYOR"
+    ]
+  },
+  {
+    "id": 12,
+    "nombre": "Línea H",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "TENNIS PLAZA FABRICATO",
+      "PEREIRA CENTRO",
+      "LA COLINA ARAUCO",
+      "TENNIS NUESTRO BOGOTA",
+      "UNICENTRO MEDELLIN",
+      "PUERTA DEL NORTE 2"
+    ]
+  },
+  {
+    "id": 13,
+    "nombre": "Línea I",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "LOS MOLINOS",
+      "TENNIS VIVA ENVIGADO",
+      "MAYORCA 2",
+      "PARQUE ARBOLEDA",
+      "JOSE MARIA CORDOVA",
+      "SANTA FE 1"
+    ]
+  },
+  {
+    "id": 14,
+    "nombre": "Línea J",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "SAN NICOLAS",
+      "PALMIRA LLANOGRANDE",
+      "MALL PLAZA CARTAGENA",
+      "TOP MARK MAYORCA",
+      "TENNIS APARTADO PLAZA DEL RIO"
+    ]
+  },
+  {
+    "id": 15,
+    "nombre": "Línea K",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "VIVA LAURELES MEDELLIN",
+      "IBAGUE",
+      "MARIA VICTORIA",
+      "VIVA LA CEJA",
+      "TENNIS MALL PLAZA MANIZALES"
+    ]
+  },
+  {
+    "id": 16,
+    "nombre": "Línea L",
+    "tipo": "ALMACÉN DE LÍNEA",
+    "tiendas": [
+      "LA FLORIDA MEDELLIN 2",
+      "METRO SAN ANTONIO",
+      "SAN NICOLAS 2",
+      "SAN DIEGO 2",
+      "CAMINO REAL"
+    ]
+  }
+]
