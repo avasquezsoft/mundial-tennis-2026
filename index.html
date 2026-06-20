@@ -593,8 +593,13 @@ async function renderPage(p){
   if(p==='inicio')rInicio();
   else if(p[0]==='s'&&p.length===2){
     const sem=+p[1];
-    if(!weekData[sem]) await loadWeekFromBackend(sem);
-    else rSemana(sem);
+    // ponytail: renderizar siempre primero para que el usuario vea la página,
+    // luego intentar traer datos del backend si aún no están cargados.
+    rSemana(sem);
+    if(!weekData[sem]){
+      console.log(`Semana ${sem} no tiene datos locales, intentando cargar del backend...`);
+      await loadWeekFromBackend(sem);
+    }
   }
   else if(p==='acumulado')rAcumulado();
 }
@@ -664,13 +669,15 @@ async function uploadExcelToBackend(file, sem){
 // Carga silenciosa de una semana desde el backend (sin toast de error si no existe)
 async function loadWeekFromBackend(sem){
   try{
+    console.log(`Cargando semana ${sem} desde /api/weeks/${sem}/excel...`);
     const resp = await fetch(`/api/weeks/${sem}/excel`);
+    console.log(`Respuesta semana ${sem}:`, resp.status);
     if(!resp.ok){
-      if(resp.status===404) return; // aún no hay Excel subido, es normal
+      if(resp.status===404){ console.log(`Semana ${sem}: aún no tiene Excel en el servidor`); return; }
       throw new Error(`Error ${resp.status}`);
     }
     const blob = await resp.blob();
-    if(blob.size < 1000) return;
+    if(blob.size < 1000){ console.log(`Semana ${sem}: archivo muy pequeño, se ignora`); return; }
     const file = new File([blob], `cubo-semana-${sem}.xlsx`, {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
